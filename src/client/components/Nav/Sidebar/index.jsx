@@ -247,79 +247,79 @@ class Sidebar extends React.Component {
           />
         )}
 
-        {sessionUser && Helpers.canUser('settings:edit') && (
-          <SidebarItem
-            text='Settings'
-            icon='settings'
-            href='/settings/general'
-            class='navSettings no-ajaxy perma-hide-el'
-            hasSubmenu={true}
-            subMenuTarget='settings'
-            active={activeItem === 'settings'}
-          >
-            <Submenu id='settings'>
-              <SubmenuItem text='General' icon='tune' href='/settings' active={activeSubItem === 'settings-general'} />
-              <SubmenuItem
-                text='Appearance'
-                icon='style'
-                href='/settings/appearance'
-                active={activeSubItem === 'settings-appearance'}
-              />
-              <SubmenuItem
-                text='Tickets'
-                icon='assignment'
-                href='/settings/tickets'
-                active={activeSubItem === 'settings-tickets'}
-              />
-              <SubmenuItem
-                text='Permissions'
-                icon='security'
-                href='/settings/permissions'
-                active={activeSubItem === 'settings-permissions'}
-              />
-              <SubmenuItem
-                text='Mailer'
-                icon='email'
-                href='/settings/mailer'
-                active={activeSubItem === 'settings-mailer'}
-              />
-              {/*<SubmenuItem text="Notifications" icon="" href="/settings/notifications" active={activeSubItem === 'settings-notifications'} />*/}
-              <SubmenuItem
-                href={'/settings/elasticsearch'}
-                text={'Elasticsearch'}
-                icon={'search'}
-                active={activeSubItem === 'settings-elasticsearch'}
-              />
-              <SubmenuItem
-                text='Push Service'
-                icon='mobile_friendly'
-                href='/settings/tps'
-                active={activeSubItem === 'settings-tps'}
-              />
-              <SubmenuItem
-                text='Backup/Restore'
-                icon='archive'
-                href='/settings/backup'
-                active={activeSubItem === 'settings-backup'}
-              />
-              <SubmenuItem
-                text='Legal'
-                icon='gavel'
-                href='/settings/legal'
-                active={activeSubItem === 'settings-legal'}
-              />
-              {sessionUser && Helpers.canUser('settings:logs') && (
-                <SubmenuItem
-                  text='Logs'
-                  icon='remove_from_queue'
-                  href='/settings/logs'
-                  hasSeperator={true}
-                  active={activeSubItem === 'settings-logs'}
-                />
-              )}
-            </Submenu>
-          </SidebarItem>
-        )}
+        {/*{sessionUser && Helpers.canUser('settings:edit') && (*/}
+        {/*  <SidebarItem*/}
+        {/*    text='Settings'*/}
+        {/*    icon='settings'*/}
+        {/*    href='/settings/general'*/}
+        {/*    class='navSettings no-ajaxy perma-hide-el'*/}
+        {/*    hasSubmenu={true}*/}
+        {/*    subMenuTarget='settings'*/}
+        {/*    active={activeItem === 'settings'}*/}
+        {/*  >*/}
+        {/*    <Submenu id='settings'>*/}
+        {/*      <SubmenuItem text='General' icon='tune' href='/settings' active={activeSubItem === 'settings-general'} />*/}
+        {/*      <SubmenuItem*/}
+        {/*        text='Appearance'*/}
+        {/*        icon='style'*/}
+        {/*        href='/settings/appearance'*/}
+        {/*        active={activeSubItem === 'settings-appearance'}*/}
+        {/*      />*/}
+        {/*      <SubmenuItem*/}
+        {/*        text='Tickets'*/}
+        {/*        icon='assignment'*/}
+        {/*        href='/settings/tickets'*/}
+        {/*        active={activeSubItem === 'settings-tickets'}*/}
+        {/*      />*/}
+        {/*      <SubmenuItem*/}
+        {/*        text='Permissions'*/}
+        {/*        icon='security'*/}
+        {/*        href='/settings/permissions'*/}
+        {/*        active={activeSubItem === 'settings-permissions'}*/}
+        {/*      />*/}
+        {/*      <SubmenuItem*/}
+        {/*        text='Mailer'*/}
+        {/*        icon='email'*/}
+        {/*        href='/settings/mailer'*/}
+        {/*        active={activeSubItem === 'settings-mailer'}*/}
+        {/*      />*/}
+        {/*      /!*<SubmenuItem text="Notifications" icon="" href="/settings/notifications" active={activeSubItem === 'settings-notifications'} />*!/*/}
+        {/*      <SubmenuItem*/}
+        {/*        href={'/settings/elasticsearch'}*/}
+        {/*        text={'Elasticsearch'}*/}
+        {/*        icon={'search'}*/}
+        {/*        active={activeSubItem === 'settings-elasticsearch'}*/}
+        {/*      />*/}
+        {/*      <SubmenuItem*/}
+        {/*        text='Push Service'*/}
+        {/*        icon='mobile_friendly'*/}
+        {/*        href='/settings/tps'*/}
+        {/*        active={activeSubItem === 'settings-tps'}*/}
+        {/*      />*/}
+        {/*      <SubmenuItem*/}
+        {/*        text='Backup/Restore'*/}
+        {/*        icon='archive'*/}
+        {/*        href='/settings/backup'*/}
+        {/*        active={activeSubItem === 'settings-backup'}*/}
+        {/*      />*/}
+        {/*      <SubmenuItem*/}
+        {/*        text='Legal'*/}
+        {/*        icon='gavel'*/}
+        {/*        href='/settings/legal'*/}
+        {/*        active={activeSubItem === 'settings-legal'}*/}
+        {/*      />*/}
+        {/*      {sessionUser && Helpers.canUser('settings:logs') && (*/}
+        {/*        <SubmenuItem*/}
+        {/*          text='Logs'*/}
+        {/*          icon='remove_from_queue'*/}
+        {/*          href='/settings/logs'*/}
+        {/*          hasSeperator={true}*/}
+        {/*          active={activeSubItem === 'settings-logs'}*/}
+        {/*        />*/}
+        {/*      )}*/}
+        {/*    </Submenu>*/}
+        {/*  </SidebarItem>*/}
+        {/*)}*/}
         <NavSeparator />
         <SidebarItem href='/about' icon='help' class = 'perma-hide-el' text='About' active={activeItem === 'about'} />
         <SidebarItem href={'https://www.trudesk.io'} class = 'perma-hide-el' icon={'cloud'} text={'Cloud'} target={'_blank'} />
