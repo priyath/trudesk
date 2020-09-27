@@ -139,12 +139,12 @@ class TopbarContainer extends React.Component {
     return (
       <div>
         {sessionUser && sessionUser.role.isAdmin && (
-          <div className={clsx('info-banner', this.showInfoBanner ? '' : 'hide')}>
+          <div className={clsx('info-banner', false ? '' : 'hide')}>
             <div className={'close'} onClick={() => this.closeInfo()} />
             <p>
-              You're invited to sign up for Trudesk Cloud Beta, our free-to-use cloud-hosted platform.
+              You're now logged into ITEQ IMS.
               <a
-                href='https://trudesk.io'
+                href=''
                 className={'md-btn md-btn-wave md-btn-small md-btn-success text-white'}
                 style={{ marginLeft: 15 }}
                 target={'_blank'}
