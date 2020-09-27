@@ -139,7 +139,7 @@ class Sidebar extends React.Component {
           text='Messages'
           icon='chat'
           href='/messages'
-          class='navMessages'
+          class='navMessages perma-hide-el'
           active={activeItem === 'messages'}
         />
         {sessionUser && Helpers.canUser('accounts:view') && (
@@ -242,7 +242,7 @@ class Sidebar extends React.Component {
             text='Notices'
             icon='warning'
             href='/notices'
-            class='navNotices'
+            class='navNotices perma-hide-el'
             active={activeItem === 'notices'}
           />
         )}
@@ -252,7 +252,7 @@ class Sidebar extends React.Component {
             text='Settings'
             icon='settings'
             href='/settings/general'
-            class='navSettings no-ajaxy'
+            class='navSettings no-ajaxy perma-hide-el'
             hasSubmenu={true}
             subMenuTarget='settings'
             active={activeItem === 'settings'}
@@ -321,8 +321,8 @@ class Sidebar extends React.Component {
           </SidebarItem>
         )}
         <NavSeparator />
-        <SidebarItem href='/about' icon='help' text='About' active={activeItem === 'about'} />
-        <SidebarItem href={'https://www.trudesk.io'} icon={'cloud'} text={'Cloud'} target={'_blank'} />
+        <SidebarItem href='/about' icon='help' class = 'perma-hide-el' text='About' active={activeItem === 'about'} />
+        <SidebarItem href={'https://www.trudesk.io'} class = 'perma-hide-el' icon={'cloud'} text={'Cloud'} target={'_blank'} />
       </ul>
     )
   }

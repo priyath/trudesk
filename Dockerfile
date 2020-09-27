@@ -1,4 +1,4 @@
-FROM golang:1.10.0-alpine AS gcsfuse
+FROM golang:1.14.0-alpine AS gcsfuse
 RUN apk add --no-cache git
 ENV GOPATH /go
 RUN go get -u github.com/googlecloudplatform/gcsfuse

@@ -185,17 +185,17 @@ class TopbarContainer extends React.Component {
                       </li>
                     )}
                     {/* End Create Ticket Perm */}
-                    <li className='top-bar-icon'>
-                      <PDropdownTrigger target={'conversations'}>
-                        <a
-                          title={'Conversations'}
-                          className='no-ajaxy uk-vertical-align'
-                          onClick={e => TopbarContainer.onConversationsClicked(e)}
-                        >
-                          <i className='material-icons'>sms</i>
-                        </a>
-                      </PDropdownTrigger>
-                    </li>
+                    {/*<li className='top-bar-icon'>*/}
+                    {/*  <PDropdownTrigger target={'conversations'}>*/}
+                    {/*    <a*/}
+                    {/*      title={'Conversations'}*/}
+                    {/*      className='no-ajaxy uk-vertical-align'*/}
+                    {/*      onClick={e => TopbarContainer.onConversationsClicked(e)}*/}
+                    {/*    >*/}
+                    {/*      <i className='material-icons'>sms</i>*/}
+                    {/*    </a>*/}
+                    {/*  </PDropdownTrigger>*/}
+                    {/*</li>*/}
                     <li className='top-bar-icon'>
                       <PDropdownTrigger target={'notifications'}>
                         <a title={'Notifications'} className={'no-ajaxy uk-vertical-align'}>
@@ -208,21 +208,21 @@ class TopbarContainer extends React.Component {
                         </a>
                       </PDropdownTrigger>
                     </li>
-                    <li className='top-bar-icon'>
-                      <OffCanvasTrigger target={'online-user-list'}>
-                        <a title={'Online Users'} className='no-ajaxy'>
-                          <i className='material-icons'>perm_contact_calendar</i>
-                          <span
-                            className={
-                              'online-user-count alert uk-border-circle label ' +
-                              (this.activeUserCount < 1 ? 'hide' : '')
-                            }
-                          >
-                            {this.activeUserCount}
-                          </span>
-                        </a>
-                      </OffCanvasTrigger>
-                    </li>
+                    {/*<li className='top-bar-icon'>*/}
+                    {/*  <OffCanvasTrigger target={'online-user-list'}>*/}
+                    {/*    <a title={'Online Users'} className='no-ajaxy'>*/}
+                    {/*      <i className='material-icons'>perm_contact_calendar</i>*/}
+                    {/*      <span*/}
+                    {/*        className={*/}
+                    {/*          'online-user-count alert uk-border-circle label ' +*/}
+                    {/*          (this.activeUserCount < 1 ? 'hide' : '')*/}
+                    {/*        }*/}
+                    {/*      >*/}
+                    {/*        {this.activeUserCount}*/}
+                    {/*      </span>*/}
+                    {/*    </a>*/}
+                    {/*  </OffCanvasTrigger>*/}
+                    {/*</li>*/}
                     <li className='top-bar-icon nopadding nohover'>
                       <i className='material-icons separator'>remove</i>
                     </li>
