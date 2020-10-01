@@ -77,6 +77,7 @@ apiTeams.update = function (req, res) {
 
     if (putData.name) team.name = putData.name
     if (putData.members) team.members = putData.members
+    if (putData.sendNotificationsTo) team.sendNotificationsTo = putData.sendNotificationsTo
 
     team.save(function (err, team) {
       if (err) return apiUtils.sendApiError(res, 500, err.message)

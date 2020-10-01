@@ -62,7 +62,8 @@ class EditTeamModal extends React.Component {
     const payload = {
       _id: this.props.team._id,
       name: this.name,
-      members: this.membersSelect.getSelected() || []
+      members: this.membersSelect.getSelected() || [],
+      sendNotificationsTo: this.sendNotificationsToSelect.getSelected() || []
     }
 
     this.props.saveEditTeam(payload)
@@ -79,6 +80,7 @@ class EditTeamModal extends React.Component {
       .toArray()
 
     const selectedMembers = this.props.team.members
+    const sendNotificationsTo = this.props.team.sendNotificationsTo
 
     return (
       <BaseModal {...this.props} options={{ bgclose: false }}>
@@ -106,6 +108,15 @@ class EditTeamModal extends React.Component {
               initialSelected={selectedMembers}
               onChange={() => {}}
               ref={r => (this.membersSelect = r)}
+            />
+          </div>
+          <div className={'uk-margin-medium-bottom'}>
+            <label style={{ marginBottom: 5 }}>Send Notifications To</label>
+            <MultiSelect
+                items={mappedAccounts}
+                initialSelected={sendNotificationsTo}
+                onChange={() => {}}
+                ref={r => (this.sendNotificationsToSelect = r)}
             />
           </div>
           <div className='uk-modal-footer uk-text-right'>
