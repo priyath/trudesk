@@ -28,6 +28,7 @@ import Button from 'components/Button'
 import MultiSelect from 'components/MultiSelect'
 import $ from 'jquery'
 import SpinLoader from 'components/SpinLoader'
+import SingleSelect from "components/SingleSelect";
 
 @observer
 class EditTeamModal extends React.Component {
@@ -63,7 +64,7 @@ class EditTeamModal extends React.Component {
       _id: this.props.team._id,
       name: this.name,
       members: this.membersSelect.getSelected() || [],
-      sendNotificationsTo: this.sendNotificationsToSelect.getSelected() || []
+      defaultAssignee: this.assigneeSelect.value || null,
     }
 
     this.props.saveEditTeam(payload)
@@ -79,8 +80,8 @@ class EditTeamModal extends React.Component {
       })
       .toArray()
 
-    const selectedMembers = this.props.team.members
-    const sendNotificationsTo = this.props.team.sendNotificationsTo
+    const selectedMembers = this.props.team.members;
+    const defaultAssignee = this.props.team.defaultAssignee;
 
     return (
       <BaseModal {...this.props} options={{ bgclose: false }}>
@@ -110,13 +111,16 @@ class EditTeamModal extends React.Component {
               ref={r => (this.membersSelect = r)}
             />
           </div>
-          <div className={'uk-margin-medium-bottom'}>
-            <label style={{ marginBottom: 5 }}>Send Notifications To</label>
-            <MultiSelect
+          <div className='uk-margin-medium-bottom'>
+            <label className={'uk-form-label'}>Default Assignee</label>
+            <SingleSelect
                 items={mappedAccounts}
-                initialSelected={sendNotificationsTo}
-                onChange={() => {}}
-                ref={r => (this.sendNotificationsToSelect = r)}
+                width={'100'}
+                showTextbox={false}
+                ref={r => (this.assigneeSelect = r)}
+                defaultValue={defaultAssignee}
+                // onSelectChange={e => this.onRoleSelectChange(e)}
+                // disabled={!edit}
             />
           </div>
           <div className='uk-modal-footer uk-text-right'>

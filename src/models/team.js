@@ -30,12 +30,7 @@ var teamSchema = mongoose.Schema({
       autopopulate: { select: '-hasL2Auth -preferences -__v' }
     }
   ],
-  sendNotificationsTo: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'accounts',
-    }
-  ],
+  defaultAssignee: { type: String, required: false, unique: false },
 })
 
 teamSchema.plugin(require('mongoose-autopopulate'))
