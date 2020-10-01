@@ -425,35 +425,51 @@ apiTickets.create = function (req, res) {
     action: 'ticket:created',
     description: 'Ticket was created.',
     owner: req.user._id
-  }
+  };
 
-  var TicketSchema = require('../../../models/ticket')
-  var ticket = new TicketSchema(postData)
-  if (!_.isUndefined(postData.owner)) {
-    ticket.owner = postData.owner
-  } else {
-    ticket.owner = req.user._id
-  }
+  const DepartmentSchema = require('../../../models/department');
 
-  ticket.subject = sanitizeHtml(ticket.subject).trim()
+  DepartmentSchema.getDepartmentsByGroup(postData.group, function (err, departments) {
+    let defaultAssignee;
 
-  var marked = require('marked')
-  var tIssue = ticket.issue
-  tIssue = tIssue.replace(/(\r\n|\n\r|\r|\n)/g, '<br>')
-  tIssue = sanitizeHtml(tIssue).trim()
-  ticket.issue = marked(tIssue)
-  ticket.history = [HistoryItem]
-  ticket.subscribers = [req.user._id]
-
-  ticket.save(function (err, t) {
-    if (err) {
-      response.success = false
-      response.error = err
-      winston.debug(response)
-      return res.status(400).json(response)
+    // read default assignee value if available. We assume a group can have only one department and one team
+    if (!err && departments) {
+      try {
+        defaultAssignee = departments[0].teams[0].defaultAssignee;
+      } catch (e) {
+        defaultAssignee = null;
+      }
     }
 
-    t.populate('group owner priority', function (err, tt) {
+    var TicketSchema = require('../../../models/ticket')
+    var ticket = new TicketSchema(postData)
+    if (!_.isUndefined(postData.owner)) {
+      ticket.owner = postData.owner
+    } else {
+      ticket.owner = req.user._id
+    }
+
+    ticket.subject = sanitizeHtml(ticket.subject).trim()
+
+    var marked = require('marked')
+    var tIssue = ticket.issue
+    tIssue = tIssue.replace(/(\r\n|\n\r|\r|\n)/g, '<br>')
+    tIssue = sanitizeHtml(tIssue).trim()
+    ticket.issue = marked(tIssue)
+    ticket.history = [HistoryItem]
+    ticket.subscribers = [req.user._id]
+
+    if (defaultAssignee) {
+      ticket.assignee = defaultAssignee;
+      const AssigneeHistoryItem = {
+        action: 'ticket:set:assignee',
+        description: 'Assigned to default assignee on ticket creation.',
+        owner: req.user._id
+      };
+      ticket.history.push(AssigneeHistoryItem)
+    }
+
+    ticket.save(function (err, t) {
       if (err) {
         response.success = false
         response.error = err
@@ -461,16 +477,25 @@ apiTickets.create = function (req, res) {
         return res.status(400).json(response)
       }
 
-      emitter.emit('ticket:created', {
-        hostname: req.headers.host,
-        socketId: socketId,
-        ticket: tt
-      })
+      t.populate('group owner priority', function (err, tt) {
+        if (err) {
+          response.success = false
+          response.error = err
+          winston.debug(response)
+          return res.status(400).json(response)
+        }
 
-      response.ticket = tt
-      res.json(response)
+        emitter.emit('ticket:created', {
+          hostname: req.headers.host,
+          socketId: socketId,
+          ticket: tt
+        })
+
+        response.ticket = tt;
+        res.json(response)
+      })
     })
-  })
+  });
 }
 
 /**
