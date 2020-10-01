@@ -58,16 +58,26 @@ class EditTeamModal extends React.Component {
   onSaveTeamEdit (e) {
     e.preventDefault()
     const $form = $(e.target)
-    if (!$form.isValid(null, null, false)) return false
+    if (!$form.isValid(null, null, false)) return false;
+
+    const members = this.membersSelect.getSelected() || [];
+    const defaultAssignee = this.assigneeSelect.value || null;
+
+    if (defaultAssignee && !members.includes(defaultAssignee)) {
+      this.roleSelectErrorMessage.classList.remove('hide');
+      return;
+    }
+
+    this.roleSelectErrorMessage.classList.add('hide');
 
     const payload = {
       _id: this.props.team._id,
       name: this.name,
-      members: this.membersSelect.getSelected() || [],
-      defaultAssignee: this.assigneeSelect.value || null,
-    }
+      members,
+      defaultAssignee,
+    };
 
-    this.props.saveEditTeam(payload)
+    this.props.saveEditTeam(payload);
   }
 
   render () {
@@ -122,6 +132,13 @@ class EditTeamModal extends React.Component {
                 // onSelectChange={e => this.onRoleSelectChange(e)}
                 // disabled={!edit}
             />
+            <span
+                className='hide help-block'
+                style={{ display: 'inline-block', marginTop: '10px', fontWeight: 'bold', color: '#d85030' }}
+                ref={r => (this.roleSelectErrorMessage = r)}
+            >
+                The default assignee should be added as a team member
+              </span>
           </div>
           <div className='uk-modal-footer uk-text-right'>
             <Button text={'Close'} flat={true} waves={true} extraClass={'uk-modal-close'} />
