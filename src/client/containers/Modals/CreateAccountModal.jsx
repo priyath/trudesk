@@ -38,6 +38,7 @@ class CreateAccountModal extends React.Component {
   @observable passwordConfirm = ''
   @observable fullname = ''
   @observable email = ''
+  @observable tel = ''
   @observable title = ''
   selectedRole = ''
   @observable isAgentRole = false
@@ -106,6 +107,7 @@ class CreateAccountModal extends React.Component {
       fullname: this.fullname,
       title: this.title,
       email: this.email,
+      tel: this.tel,
       groups: this.groupSelect ? this.groupSelect.getSelected() : undefined,
       teams: this.teamSelect ? this.teamSelect.getSelected() : undefined,
       role: this.selectedRole,
@@ -224,6 +226,15 @@ class CreateAccountModal extends React.Component {
                 value={this.email}
                 onChange={e => this.onInputChanged(e, 'email')}
                 data-validation='email'
+              />
+            </div>
+            <div className='uk-margin-medium-bottom'>
+              <label className='uk-form-label'>Phone (eg: 0761133456)</label>
+              <input
+                  type='tel'
+                  className={'md-input'}
+                  value={this.tel}
+                  onChange={e => this.onInputChanged(e, 'tel')}
               />
             </div>
             <div className='uk-margin-medium-bottom'>

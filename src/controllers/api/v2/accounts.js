@@ -36,6 +36,7 @@ accountsApi.create = function (req, res) {
           {
             username: postData.username,
             email: postData.email,
+            tel: postData.tel,
             password: postData.password,
             fullname: postData.fullname,
             title: postData.title,
@@ -268,6 +269,7 @@ accountsApi.update = function (req, res) {
 
           if (!_.isUndefined(postData.fullname) && postData.fullname.length > 0) user.fullname = postData.fullname
           if (!_.isUndefined(postData.email) && postData.email.length > 0) user.email = postData.email
+          if (!_.isUndefined(postData.tel) && postData.tel.length > 0) user.tel = postData.tel
           if (!_.isUndefined(postData.title) && postData.title.length > 0) user.title = postData.title
           if (!_.isUndefined(postData.role) && postData.role.length > 0) user.role = postData.role
 
