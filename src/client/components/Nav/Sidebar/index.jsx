@@ -247,6 +247,16 @@ class Sidebar extends React.Component {
           />
         )}
 
+        {/*{sessionUser && Helpers.canUser('agent:*', true) && (*/}
+        {/*    <SidebarItem*/}
+        {/*        text='Locations'*/}
+        {/*        icon='dashboard'*/}
+        {/*        href='/locations'*/}
+        {/*        class='navHome'*/}
+        {/*        active={activeItem === 'locations'}*/}
+        {/*    />*/}
+        {/*)}*/}
+
         {/*{sessionUser && Helpers.canUser('settings:edit') && (*/}
         {/*  <SidebarItem*/}
         {/*    text='Settings'*/}

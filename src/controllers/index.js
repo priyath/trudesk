@@ -29,6 +29,7 @@ var Controllers = {
   editor: require('./editor'),
   backuprestore: require('./backuprestore'),
   api: require('./api'),
+  locations: require('./locations'),
 
   debug: require('./debug')
 }

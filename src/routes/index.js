@@ -264,6 +264,9 @@ function mainRoutes (router, middleware, controllers) {
     controllers.reports.breakdownUser
   )
 
+  // Locations
+  router.get('/locations', middleware.redirectToLogin, middleware.loadCommonData, controllers.locations.get)
+
   // Notices
   router.get('/notices', middleware.redirectToLogin, middleware.loadCommonData, controllers.notices.get)
   router.get('/notices/create', middleware.redirectToLogin, middleware.loadCommonData, controllers.notices.create)

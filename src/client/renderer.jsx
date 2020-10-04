@@ -16,13 +16,14 @@ import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
 import React from 'react'
 
-import TicketsContainer from 'containers/Tickets/TicketsContainer'
-import SingleTicketContainer from 'containers/Tickets/SingleTicketContainer'
-import SettingsContainer from 'containers/Settings/SettingsContainer'
-import AccountsContainer from 'containers/Accounts'
-import GroupsContainer from 'containers/Groups'
-import TeamsContainer from 'containers/Teams'
-import DepartmentsContainer from 'containers/Departments'
+import TicketsContainer from 'containers/Tickets/TicketsContainer';
+import SingleTicketContainer from 'containers/Tickets/SingleTicketContainer';
+import SettingsContainer from 'containers/Settings/SettingsContainer';
+import AccountsContainer from 'containers/Accounts';
+import GroupsContainer from 'containers/Groups';
+import TeamsContainer from 'containers/Teams';
+import DepartmentsContainer from 'containers/Departments';
+import LocationsContainer from 'containers/Locations';
 
 export default function (store) {
   if (document.getElementById('tickets-container')) {
@@ -102,5 +103,15 @@ export default function (store) {
     )
 
     ReactDOM.render(SettingsContainerWithProvider, document.getElementById('settings-container'))
+  }
+
+  if (document.getElementById('locations-container')) {
+    const LocationsContainerWithProvider = (
+        <Provider store={store}>
+          <LocationsContainer />
+        </Provider>
+    )
+
+    ReactDOM.render(LocationsContainerWithProvider, document.getElementById('locations-container'))
   }
 }
