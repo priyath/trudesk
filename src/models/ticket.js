@@ -1550,7 +1550,7 @@ ticketSchema.statics.getTopTicketGroups = function (timespan, top, callback) {
             }
           }
 
-          topCount.push({ name: grp.name, count: tickets.length })
+          topCount.push({ id: grp._id, name: grp.name, count: tickets.length })
         }
 
         topCount = _.sortBy(topCount, function (o) {

@@ -231,7 +231,10 @@ define('pages/dashboard', [
           method: 'GET',
           success: function (data) {
             var arr = _.map(data.tags, function (v, key) {
-              return [key, v]
+              // TODO: this impl should be changed
+              const tagName = key.split(',')[0];
+              const tagId = key.split(',')[1];
+              return [tagId, v, tagName]
             })
 
             arr = _.first(arr, 10)
@@ -254,6 +257,12 @@ define('pages/dashboard', [
               '#607D8B'
             ]
 
+            const nameMap = arr.reduce(function(map, el) {
+              map[el[0]] = el[2];
+              return map;
+            }, {});
+
+
             var c = _.object(
               _.map(arr, function (v) {
                 return v[0]
@@ -269,8 +278,14 @@ define('pages/dashboard', [
               data: {
                 columns: arr,
                 type: 'donut',
+                onclick: function (data, i) {
+                  window.location.href = `/tickets/filter/?f=1&tag=${data.id}`
+                  ;
+                },
                 colors: c,
-                empty: { label: { text: 'No Data Available' } }
+                empty: { label: { text: 'No Data Available' } },
+                labels: true,
+                names: nameMap
               },
               donut: {
                 label: {
@@ -299,7 +314,7 @@ define('pages/dashboard', [
           method: 'GET',
           success: function (data) {
             var arr = _.map(data.items, function (v) {
-              return [v.name, v.count]
+              return [v.id, v.count, v.name]
             })
 
             var colors = [
@@ -330,6 +345,11 @@ define('pages/dashboard', [
               colors
             )
 
+            const nameMap = arr.reduce(function(map, el) {
+              map[el[0]] = el[2];
+              return map;
+            }, {});
+
             c3.generate({
               bindto: d3.select('#pieChart'),
               size: {
@@ -338,8 +358,14 @@ define('pages/dashboard', [
               data: {
                 columns: arr,
                 type: 'pie',
+                onclick: function (data, i) {
+                  window.location.href = `/tickets/filter/?f=1&gp=${data.id}`
+                  ;
+                },
                 colors: c,
-                empty: { label: { text: 'No Data Available' } }
+                empty: { label: { text: 'No Data Available' } },
+                labels: true,
+                names: nameMap
               },
               donut: {
                 label: {
@@ -347,7 +373,7 @@ define('pages/dashboard', [
                     return ''
                   }
                 }
-              }
+              },
             })
 
             $('#pieChart')

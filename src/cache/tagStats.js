@@ -66,7 +66,7 @@ var init = function (tickets, timespan, callback) {
 
         for (var i = 0; i < $tickets.length; i++) {
           _.each(tickets[i].tags, function (tag) {
-            t.push(tag.name)
+            t.push([tag.name, tag.id])
           })
         }
 
