@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import GeoMap from 'components/GeoMap'
+import PageTitle from "components/PageTitle";
+import PageContent from "components/PageContent";
 
 class LocationsContainer extends React.Component {
     componentDidMount () {
@@ -11,8 +13,12 @@ class LocationsContainer extends React.Component {
 
         return (
             <div>
-                <h1>Locations View</h1>
-                <GeoMap/>
+                <PageTitle
+                    title={'Locations'}
+                />
+                <PageContent padding={0} paddingBottom={0}>
+                    <GeoMap/>
+                </PageContent>
             </div>
         )
     }
