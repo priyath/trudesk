@@ -54,7 +54,7 @@ var userSchema = mongoose.Schema({
   password: { type: String, required: true, select: false },
   fullname: { type: String, required: true, index: true },
   email: { type: String, required: true, unique: true, lowercase: true },
-  tel: { type: String, required: false, unique: true, lowercase: true },
+  tel: { type: String, required: false, unique: false, lowercase: true },
   role: { type: mongoose.Schema.Types.ObjectId, ref: 'roles', required: true },
   lastOnline: Date,
   title: String,
