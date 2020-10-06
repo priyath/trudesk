@@ -24,6 +24,19 @@ const statusToName = status => {
     case 0:
       return 'New'
     case 1:
+      return 'In Progress'
+    case 2:
+      return 'Pending'
+    case 3:
+      return 'Closed'
+  }
+}
+
+const statusToClassName = status => {
+  switch (status) {
+    case 0:
+      return 'New'
+    case 1:
       return 'Open'
     case 2:
       return 'Pending'
@@ -98,7 +111,7 @@ class StatusSelector extends React.Component {
           title='Change Status'
           className={clsx(
             `ticket-status`,
-            `ticket-${statusToName(this.status).toLowerCase()}`,
+            `ticket-${statusToClassName(this.status).toLowerCase()}`,
             this.props.hasPerm && `cursor-pointer`
           )}
           onClick={e => this.toggleDropMenu(e)}
@@ -119,7 +132,7 @@ class StatusSelector extends React.Component {
               <span>New</span>
             </li>
             <li className='ticket-status ticket-open' onClick={() => this.changeStatus(1)}>
-              <span>Open</span>
+              <span>In Progress</span>
             </li>
             <li className='ticket-status ticket-pending' onClick={() => this.changeStatus(2)}>
               <span>Pending</span>

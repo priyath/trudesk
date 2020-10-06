@@ -11,7 +11,7 @@ describe('Handlebars Helpers', function () {
     var strDefault = hbsHelpers.helpers.statusName()
 
     expect(strNew).to.equal('New')
-    expect(strOpen).to.equal('Open')
+    expect(strOpen).to.equal('In Progress')
     expect(strPending).to.equal('Pending')
     expect(strClosed).to.equal('Closed')
     expect(strDefault).to.equal('New')

@@ -227,7 +227,7 @@ ticketSchema.virtual('commentsAndNotes').get(function () {
  * @example
  * Status:
  *      0 - New
- *      1 - Open
+ *      1 - In Progress
  *      2 - Pending
  *      3 - Closed
  */
@@ -1646,7 +1646,7 @@ function statusToString (status) {
       str = 'New'
       break
     case 1:
-      str = 'Open'
+      str = 'In Progress'
       break
     case 2:
       str = 'Pending'

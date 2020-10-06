@@ -806,7 +806,7 @@ var helpers = {
         str = 'New'
         break
       case 1:
-        str = 'Open'
+        str = 'In Progress'
         break
       case 2:
         str = 'Pending'
