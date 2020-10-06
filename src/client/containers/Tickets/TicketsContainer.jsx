@@ -361,6 +361,19 @@ class TicketsContainer extends React.Component {
                   }
                 }
 
+                const getIconLetter = () => {
+                  switch (ticket.get('status')) {
+                    case 0:
+                      return 'n'
+                    case 1:
+                      return 'p'
+                    case 2:
+                      return 'r'
+                    case 3:
+                      return 'c'
+                  }
+                }
+
                 const assignee = () => {
                   const a = ticket.get('assignee')
                   return !a ? '--' : a.get('fullname')
@@ -420,7 +433,7 @@ class TicketsContainer extends React.Component {
                       </label>
                     </TableCell>
                     <TableCell className={`ticket-status ticket-${status()} vam nbb uk-text-center`}>
-                      <span className={'uk-display-inline-block'}>{status()[0].toUpperCase()}</span>
+                      <span className={'uk-display-inline-block'}>{getIconLetter()[0].toUpperCase()}</span>
                     </TableCell>
                     <TableCell className={'vam nbb'}>{ticket.get('uid')}</TableCell>
                     <TableCell className={'vam nbb'}>{ticket.get('subject')}</TableCell>
