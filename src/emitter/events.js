@@ -419,8 +419,12 @@ var notifications = require('../notifications') // Load Push Events
         [
           function (cb) {
             if (ticket.owner._id.toString() === comment.owner.toString()) return cb
-            if (!_.isUndefined(ticket.assignee) && ticket.assignee._id.toString() === comment.owner.toString())
-              return cb
+
+            // commenting out since we want owner to receive notification when assignee comments on it
+            // if (!_.isUndefined(ticket.assignee) && ticket.assignee._id.toString() === comment.owner.toString()) {
+            //   console.log('2')
+            //   return cb
+            // }
 
             var notification = new NotificationSchema({
               owner: ticket.owner,

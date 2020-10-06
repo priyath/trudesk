@@ -147,21 +147,21 @@
 /******/
 /******/
 /******/ 	// add entry module to deferred list
-/******/ 	deferredModules.push(["./node_modules/expose-loader/index.js?truRequire!./src/public/js/truRequire.js","vendor"]);
+/******/ 	deferredModules.push(["./node_modules/expose-loader/index.js?truRequire!./src/public/js/truRequire.js-exposed","vendor"]);
 /******/ 	// run deferred modules when ready
 /******/ 	return checkDeferredModules();
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./node_modules/expose-loader/index.js?truRequire!./src/public/js/truRequire.js":
-/*!*****************************************************************************!*\
-  !*** ./node_modules/expose-loader?truRequire!./src/public/js/truRequire.js ***!
-  \*****************************************************************************/
+/***/ "./node_modules/expose-loader/index.js?truRequire!./src/public/js/truRequire.js-exposed":
+/*!*************************************************************************************!*\
+  !*** ./node_modules/expose-loader?truRequire!./src/public/js/truRequire.js-exposed ***!
+  \*************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("/* WEBPACK VAR INJECTION */(function(global) {module.exports = global[\"truRequire\"] = __webpack_require__(/*! -!./truRequire.js */ \"./src/public/js/truRequire.js\");\n/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/global.js */ \"./node_modules/webpack/buildin/global.js\")))\n\n//# sourceURL=webpack:///./src/public/js/truRequire.js?./node_modules/expose-loader?truRequire");
+eval("/* WEBPACK VAR INJECTION */(function(global) {module.exports = global[\"truRequire\"] = __webpack_require__(/*! -!./truRequire.js */ \"./src/public/js/truRequire.js\");\n/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../node_modules/webpack/buildin/global.js */ \"./node_modules/webpack/buildin/global.js\")))\n\n//# sourceURL=webpack:///./src/public/js/truRequire.js-exposed?./node_modules/expose-loader?truRequire");
 
 /***/ }),
 
