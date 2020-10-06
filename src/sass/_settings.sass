@@ -45,8 +45,11 @@ $accent_danger: #d32f2f !default
 $accent_warn: #feca57 !default
 // Highlight color for agents
 $accent_agent: #7d5fff
-//Highlight color for in-progress tickets
-$accent_in_progress: #ffa91b
+//Highlight color for ticket statuses
+$accent_status_new: #d32f2f
+$accent_status_progress: #ffa91b
+$accent_status_ready: #2196F3
+$accent_status_closed: #29b955
 
 // ------------------------------------------------------------------------
 
@@ -108,10 +111,10 @@ $page_content_button_text_color: automatic-text-color($page_content_button_color
 
 //$overdue_flash_color: #b71c1c
 
-$ticket_status_new: $accent_success
-$ticket_status_open: $accent_in_progress
-$ticket_status_pending: $accent_blue
-$ticket_status_closed: #CCCCCC
+$ticket_status_new: $accent_status_new
+$ticket_status_open: $accent_status_progress
+$ticket_status_pending: $accent_status_ready
+$ticket_status_closed: $accent_status_closed
 
 $trupanel_bg: lighten($page_content_bg, 7%)
 

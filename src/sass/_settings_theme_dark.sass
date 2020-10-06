@@ -18,8 +18,13 @@ $accent_color: #E74C3C
 $accent_blue: #2196F3
 $accent_success: #29b955
 $accent_danger: #d32f2f
-//Highlight color for in-progress tickets
-$accent_in_progress: #ffa91b
+
+//Highlight color for ticket statuses
+$accent_status_new: #d32f2f
+$accent_status_progress: #ffa91b
+$accent_status_ready: #2196F3
+$accent_status_closed: #29b955
+
 
 $text_color: #e2e2e2
 $p_color: $text_color
@@ -66,10 +71,10 @@ $page_content_border_accent: 2px solid $page_content_title_bg
 $page_content_button_color: #FFFFFF
 $page_content_button_text_color: $sidebar_item_active
 
-$ticket_status_new: $accent_success
-$ticket_status_open: $accent_in_progress
-$ticket_status_pending: $accent_blue
-$ticket_status_closed: #CCCCCC
+$ticket_status_new: $accent_status_new
+$ticket_status_open: $accent_status_progress
+$ticket_status_pending: $accent_status_ready
+$ticket_status_closed: $accent_status_closed
 
 $trupanel_bg: darken(#595f69, 10%)
 
