@@ -126,7 +126,7 @@ class TicketsContainer extends React.Component {
         statusText = 'In Progress'
         break
       case 2:
-        statusText = 'Pending'
+        statusText = 'Ready'
         break
       case 3:
         statusText = 'Closed'
@@ -287,7 +287,7 @@ class TicketsContainer extends React.Component {
                     <DropdownItem text={'Create'} onClick={() => this.props.showModal('CREATE_TICKET')} />
                     <DropdownSeparator />
                     <DropdownItem text={'Set In Progress'} onClick={() => this.onSetStatus(1)} />
-                    <DropdownItem text={'Set Pending'} onClick={() => this.onSetStatus(2)} />
+                    <DropdownItem text={'Set Ready'} onClick={() => this.onSetStatus(2)} />
                     <DropdownItem text={'Set Closed'} onClick={() => this.onSetStatus(3)} />
                     {helpers.canUser('tickets:delete', true) && <DropdownSeparator />}
                     {helpers.canUser('tickets:delete', true) && (

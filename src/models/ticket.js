@@ -189,7 +189,7 @@ ticketSchema.virtual('statusFormatted').get(function () {
       formatted = 'Open'
       break
     case 2:
-      formatted = 'Pending'
+      formatted = 'Ready'
       break
     case 3:
       formatted = 'Closed'
@@ -228,7 +228,7 @@ ticketSchema.virtual('commentsAndNotes').get(function () {
  * Status:
  *      0 - New
  *      1 - In Progress
- *      2 - Pending
+ *      2 - Ready
  *      3 - Closed
  */
 ticketSchema.methods.setStatus = function (ownerId, status, callback) {
@@ -1649,7 +1649,7 @@ function statusToString (status) {
       str = 'In Progress'
       break
     case 2:
-      str = 'Pending'
+      str = 'Ready'
       break
     case 3:
       str = 'Closed'

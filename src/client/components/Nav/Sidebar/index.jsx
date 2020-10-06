@@ -119,13 +119,13 @@ class Sidebar extends React.Component {
               />
               <NavSeparator />
               <SubmenuItem text='New' icon='&#xE24D;' href='/tickets/new' active={activeSubItem === 'tickets-new'} />
+              <SubmenuItem text='In Progress' icon='&#xE2C8;' href='/tickets/open' active={activeSubItem === 'tickets-open'} />
               <SubmenuItem
-                text='Pending'
+                text='Ready'
                 icon='&#xE629;'
                 href='/tickets/pending'
                 active={activeSubItem === 'tickets-pending'}
               />
-              <SubmenuItem text='In Progress' icon='&#xE2C8;' href='/tickets/open' active={activeSubItem === 'tickets-open'} />
               <SubmenuItem
                 text='Closed'
                 icon='&#xE2C7;'

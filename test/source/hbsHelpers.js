@@ -12,7 +12,7 @@ describe('Handlebars Helpers', function () {
 
     expect(strNew).to.equal('New')
     expect(strOpen).to.equal('In Progress')
-    expect(strPending).to.equal('Pending')
+    expect(strPending).to.equal('Ready')
     expect(strClosed).to.equal('Closed')
     expect(strDefault).to.equal('New')
 

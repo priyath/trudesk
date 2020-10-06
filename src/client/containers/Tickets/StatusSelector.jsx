@@ -26,7 +26,7 @@ const statusToName = status => {
     case 1:
       return 'In Progress'
     case 2:
-      return 'Pending'
+      return 'Ready'
     case 3:
       return 'Closed'
   }
@@ -135,7 +135,7 @@ class StatusSelector extends React.Component {
               <span>In Progress</span>
             </li>
             <li className='ticket-status ticket-pending' onClick={() => this.changeStatus(2)}>
-              <span>Pending</span>
+              <span>Ready</span>
             </li>
             <li className='ticket-status ticket-closed' onClick={() => this.changeStatus(3)}>
               <span>Closed</span>
