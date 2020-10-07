@@ -162,17 +162,18 @@ apiGroups.getSingleGroup = function (req, res) {
  }
  */
 apiGroups.create = function (req, res) {
-  var Group = new GroupSchema()
+  var Group = new GroupSchema();
 
-  Group.name = req.body.name
-  Group.members = req.body.members
-  Group.sendMailTo = req.body.sendMailTo
+  Group.name = req.body.name;
+  Group.coordinates = req.body.coordinates || null;
+  Group.members = req.body.members;
+  Group.sendMailTo = req.body.sendMailTo;
 
   Group.save(function (err, group) {
-    if (err) return res.status(400).json({ success: false, error: 'Error: ' + err.message })
+    if (err) return res.status(400).json({ success: false, error: 'Error: ' + err.message });
 
-    res.json({ success: true, error: null, group: group })
-  })
+    res.json({ success: true, error: null, group: group });
+  });
 }
 
 /**
@@ -227,9 +228,10 @@ apiGroups.updateGroup = function (req, res) {
     var members = _.compact(data.members)
     var sendMailTo = _.compact(data.sendMailTo)
 
-    group.name = data.name
-    group.members = members
-    group.sendMailTo = sendMailTo
+    group.name = data.name;
+    group.coordinates = data.coordinates || null;
+    group.members = members;
+    group.sendMailTo = sendMailTo;
 
     group.save(function (err, savedGroup) {
       if (err) return res.status(400).json({ error: err.message })

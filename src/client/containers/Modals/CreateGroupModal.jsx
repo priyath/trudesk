@@ -31,6 +31,8 @@ import $ from 'jquery'
 @observer
 class CreateGroupModal extends React.Component {
   @observable name = ''
+  @observable latitude = 0
+  @observable longitude = 0
 
   componentDidMount () {
     this.props.fetchAccounts({ type: 'customers' })
@@ -48,8 +50,8 @@ class CreateGroupModal extends React.Component {
     this.props.unloadAccounts()
   }
 
-  onInputChange (e) {
-    this.name = e.target.value
+  onInputChanged (e, name) {
+    this[name] = e.target.value;
   }
 
   onFormSubmit (e) {
@@ -60,10 +62,11 @@ class CreateGroupModal extends React.Component {
 
     const postData = {
       name: this.name,
+      coordinates: {latitude: this.latitude, longitude: this.longitude},
       members: this.membersSelect.getSelected() || []
     }
 
-    this.props.createGroup(postData)
+    this.props.createGroup(postData);
   }
 
   render () {
@@ -84,7 +87,7 @@ class CreateGroupModal extends React.Component {
               type='text'
               className={'md-input'}
               value={this.name}
-              onChange={e => this.onInputChange(e)}
+              onChange={e => this.onInputChanged(e, 'name')}
               data-validation='length'
               data-validation-length={'min2'}
               data-validation-error-msg={'Please enter a valid Group name. (Must contain 2 characters)'}
@@ -93,6 +96,32 @@ class CreateGroupModal extends React.Component {
           <div className={'uk-margin-medium-bottom'}>
             <label style={{ marginBottom: 5 }}>Group Members</label>
             <MultiSelect items={mappedAccounts} onChange={() => {}} ref={r => (this.membersSelect = r)} />
+          </div>
+          <div className='uk-margin-medium-bottom uk-clearfix'>
+            <div className='uk-float-left' style={{ width: '50%', paddingRight: '20px' }}>
+              <label className={'uk-form-label'}>Latitude</label>
+              <input
+                  type='text'
+                  className={'md-input'}
+                  value={this.latitude}
+                  onChange={e => this.onInputChanged(e, 'latitude')}
+                  data-validation="number"
+                  data-validation-allowing="range[-90;90]"
+                  data-validation-error-msg="Latitude value should be a number between -90 and 90"
+              />
+            </div>
+            <div className='uk-float-left uk-width-1-2'>
+              <label className={'uk-form-label'}>Longitude</label>
+              <input
+                  type='text'
+                  className={'md-input'}
+                  value={this.longitude}
+                  onChange={e => this.onInputChanged(e, 'longitude')}
+                  data-validation="number"
+                  data-validation-allowing="range[-180;180]"
+                  data-validation-error-msg="Longitude value should be a number between -180 and 180"
+              />
+            </div>
           </div>
           <div className='uk-modal-footer uk-text-right'>
             <Button text={'Close'} flat={true} waves={true} extraClass={'uk-modal-close'} />

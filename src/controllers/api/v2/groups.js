@@ -73,6 +73,7 @@ apiGroups.update = function (req, res) {
     if (err || !group) return apiUtils.sendApiError(res, 400, 'Invalid Group')
 
     if (putData.name) group.name = putData.name
+    if (putData.coordinates) group.coordinates = putData.coordinates
     if (putData.members) group.members = putData.members
     if (putData.sendMailTo) group.sendMailTo = putData.sendMailTo
 

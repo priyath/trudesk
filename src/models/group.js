@@ -30,6 +30,7 @@ var COLLECTION = 'groups'
  */
 var groupSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true },
+  coordinates: { type: Object, required: false, unique: false },
   members: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -44,7 +45,7 @@ var groupSchema = mongoose.Schema({
 groupSchema.plugin(require('mongoose-autopopulate'))
 
 groupSchema.pre('save', function (next) {
-  this.name = this.name.trim()
+  this.name = this.name.trim();
 
   next()
 })
