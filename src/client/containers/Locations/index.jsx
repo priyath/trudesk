@@ -9,29 +9,33 @@ import Log from "../../logger";
 import helpers from "lib/helpers";
 
 class LocationsContainer extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            groups: []
+        };
+    }
+
     componentDidMount () {
-        console.log('location component mounted');
-        // axios
-        //     .get(`/api/v1/tickets/type/${e.target.value}`)
-        //     .then(res => {
-        //         const type = res.data.type
-        //         if (type && type.priorities) {
-        //             this.priorities = orderBy(type.priorities, ['migrationNum'])
-        //             this.selectedPriority = head(orderBy(type.priorities, ['migrationNum']))
-        //                 ? head(orderBy(type.priorities, ['migrationNum']))._id
-        //                 : ''
-        //
-        //             setTimeout(() => {
-        //                 this.priorityLoader.classList.add('hide')
-        //                 this.priorityWrapper.classList.remove('hide')
-        //             }, 500)
-        //         }
-        //     })
-        //     .catch(error => {
-        //         this.priorityLoader.classList.add('hide')
-        //         Log.error(error)
-        //         helpers.UI.showSnackbar(`Error: ${error.response.data.error}`)
-        //     })
+        axios.get(`/api/v1/tickets/overdue`)
+            .then(res => {
+                const data = res.data.tickets || [];
+
+                const groups = data.map((el) => {
+                    return el.group;
+                }).filter((v,i,a)=>a.findIndex(t=>(t._id === v._id))===i);
+
+                this.setState({
+                    groups
+                });
+
+            })
+            .catch(error => {
+                this.priorityLoader.classList.add('hide');
+                Log.error(error);
+                helpers.UI.showSnackbar(`Error: ${error.response.data.error}`);
+            });
     }
 
     render () {
@@ -42,7 +46,7 @@ class LocationsContainer extends React.Component {
                     title={'Locations'}
                 />
                 <PageContent padding={0} paddingBottom={0}>
-                    <GeoMap/>
+                    <GeoMap markers={this.state.groups}/>
                 </PageContent>
             </div>
         )
