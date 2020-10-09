@@ -80,6 +80,8 @@ define('pages/dashboard', [
                 '</a></td>'
               html +=
                 '<td class="uk-width-1-10 uk-text-nowrap"><span class="uk-badge ticket-status-open uk-width-1-1">In Progress</span></td>'
+              html +=
+                  '<td class="uk-width-1-10 uk-text-nowrap"><span class="uk-badge ticket-status-open uk-width-1-1">In Progress</span></td>'
               html += '<td class="uk-width-6-10">' + ticket.subject + '</td>'
               if (ticket.updated) {
                 html +=
