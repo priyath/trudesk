@@ -60,7 +60,7 @@ define('pages/dashboard', [
         $('#__showOverdueTickets')
           .text()
           .toLowerCase() === 'true'
-      if (showOverdue) {
+      if (true) {
         var overdueCard = $('#overdue_tickets')
         var $overdueTableBody = overdueCard.find('table.uk-table > tbody')
         $overdueTableBody.empty() // Clear

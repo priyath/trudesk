@@ -46,7 +46,11 @@ class LocationsContainer extends React.Component {
                     title={'Locations'}
                 />
                 <PageContent padding={0} paddingBottom={0}>
-                    <GeoMap markers={this.state.groups}/>
+                    <div className="uk-grid uk-margin-medium-bottom">
+                        <div className="uk-width-2-3">
+                            <GeoMap markers={this.state.groups}/>
+                        </div>
+                    </div>
                 </PageContent>
             </div>
         )

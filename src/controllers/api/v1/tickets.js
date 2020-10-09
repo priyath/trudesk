@@ -1902,12 +1902,12 @@ apiTickets.getOverdue = function (req, res) {
   settingSchema.getSettingByName('showOverdueTickets:enable', function (err, setting) {
     if (err) return res.status(400).json({ success: false, error: err.message })
 
-    if (setting !== null && setting.value === false) {
-      return res.json({
-        success: true,
-        error: 'Show Overdue currently disabled.'
-      })
-    }
+    // if (setting !== null && setting.value === false) {
+    //   return res.json({
+    //     success: true,
+    //     error: 'Show Overdue currently disabled.'
+    //   })
+    // }
 
     var ticketSchema = require('../../../models/ticket')
     var departmentSchema = require('../../../models/department')

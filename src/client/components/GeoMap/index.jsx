@@ -5,7 +5,7 @@ import {
     GoogleMap, Marker, InfoWindow, withGoogleMap, withScriptjs,
 } from 'react-google-maps';
 import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerClusterer';
-//import silverMapStyle from './silverMapStyle.json';
+import silverMapStyle from './silverMapStyle.json';
 
 //import data from './data.json';
 
@@ -16,7 +16,7 @@ const Map = ({ markers }) => {
             defaultZoom={8}
             defaultCenter={{ lat: 7.738738, lng: 80.690157 }}
             defaultOptions={{
-                //styles: silverMapStyle,
+                styles: silverMapStyle,
                 streetViewControl: false,
                 fullscreenControl: false,
                 mapTypeControl: false,
@@ -79,12 +79,12 @@ const WrappedMap = withScriptjs(withGoogleMap(props => <Map {...props}/>));
 
 export default ({ markers }) => {
     return (
-        <div dir="ltr">
+        <div style={{height: `calc(100vh - 145px)` }}>
             <WrappedMap
                 googleMapURL={'https://maps.googleapis.com/maps/api/js?key=AIzaSyCQXPcmy5m-eemsBHdCK-fS40kF8hbWPJM&v=3.'
                 + 'exp&libraries=geometry,drawing,places'}
                 loadingElement={<div style={{ height: '100%' }} />}
-                containerElement={<div className="map" style={{ height: '700px' }} />}
+                containerElement={<div className="map" style={{ height: '100%' }} />}
                 mapElement={<div style={{ height: '100%' }} />}
                 markers={markers}
             />
