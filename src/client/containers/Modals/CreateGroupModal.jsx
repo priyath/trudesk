@@ -105,9 +105,6 @@ class CreateGroupModal extends React.Component {
                   className={'md-input'}
                   value={this.latitude}
                   onChange={e => this.onInputChanged(e, 'latitude')}
-                  data-validation="number"
-                  data-validation-allowing="range[-90;90]"
-                  data-validation-error-msg="Latitude value should be a number between -90 and 90"
               />
             </div>
             <div className='uk-float-left uk-width-1-2'>
@@ -117,9 +114,6 @@ class CreateGroupModal extends React.Component {
                   className={'md-input'}
                   value={this.longitude}
                   onChange={e => this.onInputChanged(e, 'longitude')}
-                  data-validation="number"
-                  data-validation-allowing="range[-180;180]"
-                  data-validation-error-msg="Longitude value should be a number between -180 and 180"
               />
             </div>
           </div>
