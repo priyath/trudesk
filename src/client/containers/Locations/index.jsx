@@ -8,22 +8,62 @@ import Log from "../../logger";
 import helpers from "lib/helpers";
 import SpinLoader from "components/SpinLoader";
 
+const initTicketSummary = {
+    totalCount: 0,
+    closed: 0,
+    newT: 0,
+    inProgress: 0,
+    ready: 0,
+    overdue: 0,
+};
+
 class LocationsContainer extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            groups: {},
+            groupTicketMap: {},
+            groups: [],
             loaded: false,
-            ticketSummary: {
-                totalCount: 0,
-                closed: 0,
-                newT: 0,
-                inProgress: 0,
-                ready: 0,
-                overdue: 0,
-            }
+            ticketSummary: initTicketSummary,
+            title: "Ticket Summary",
+            selectedGroupId: null,
         };
+    }
+
+    onMarkerClick (groupId) {
+        const group = this.state.groupTicketMap[groupId] || {};
+        const tickets = group && group.tickets ? group.tickets : [];
+
+        const ticketSummary = tickets.reduce((acc, t) => {
+
+            const status = parseInt(t.status);
+
+            if (status === 0){
+                acc.newT += 1;
+            } else if (status === 1) {
+                acc.inProgress += 1;
+            } else if (status === 2) {
+                acc.ready += 1;
+            } else if (status === 3) {
+                acc.closed += 1;
+            }
+
+            if (status !== 3 && t.isOverdue) {
+                acc.overdue += 1;
+            }
+
+            acc.totalCount += 1;
+
+            return acc;
+
+        }, initTicketSummary);
+
+        this.setState({
+            ticketSummary,
+            title: group.groupInfo.name,
+            selectedGroupId: groupId,
+        });
     }
 
     componentDidMount () {
@@ -56,7 +96,7 @@ class LocationsContainer extends React.Component {
                             closed += 1;
                         }
 
-                        if (ticket.isOverdue) {
+                        if (status !== 3 && ticket.isOverdue) {
                             overdue += 1;
                         }
 
@@ -91,10 +131,15 @@ class LocationsContainer extends React.Component {
         let mapComp;
 
         if (this.state.loaded){
-            mapComp = <GeoMap markers={this.state.groups}/>;
+            mapComp = <GeoMap
+                markers={this.state.groups}
+                onMarkerClick={this.onMarkerClick.bind(this)}
+            />;
         } else {
             mapComp = <SpinLoader active={true} />;
         }
+
+        const href = this.state.selectedGroupId ? `/tickets/filter/?f=1&gp=${this.state.selectedGroupId}` : `/tickets`;
 
         return (
             <div>
@@ -108,7 +153,7 @@ class LocationsContainer extends React.Component {
                         </div>
                         <div className="uk-width-1-3">
                             <table className="uk-table">
-                                <caption>Ticket Summary</caption>
+                                <caption><a href={href}>{this.state.title}</a></caption>
                                 <thead>
                                 <tr>
                                     <th className="uk-text-nowrap">Stat</th>

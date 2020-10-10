@@ -9,7 +9,7 @@ import silverMapStyle from './silverMapStyle.json';
 
 //import data from './data.json';
 
-const Map = ({ markers }) => {
+const Map = ({ markers, onMarkerClick }) => {
     return (
         <GoogleMap
             defaultZoom={8}
@@ -66,6 +66,7 @@ const Map = ({ markers }) => {
                             return (
                                 <Marker
                                     key={group._id}
+                                    onClick={()=>{ onMarkerClick(group._id)} }
                                     position={{
                                         lat: parseFloat(coordinates.latitude),
                                         lng: parseFloat(coordinates.longitude)
@@ -83,7 +84,7 @@ const Map = ({ markers }) => {
 
 const WrappedMap = withScriptjs(withGoogleMap(props => <Map {...props}/>));
 
-export default ({ markers }) => {
+export default ({ markers, onMarkerClick }) => {
     return (
         <div style={{height: `calc(100vh - 145px)` }}>
             <WrappedMap
@@ -93,6 +94,7 @@ export default ({ markers }) => {
                 containerElement={<div className="map" style={{ height: '100%' }} />}
                 mapElement={<div style={{ height: '100%' }} />}
                 markers={markers}
+                onMarkerClick={onMarkerClick}
             />
         </div>
     )
