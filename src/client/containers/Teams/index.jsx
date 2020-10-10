@@ -142,6 +142,16 @@ class TeamsContainer extends React.Component {
       )
     })
 
+    const rightComponent = helpers.canUser('teams:create', true) ?
+        <Button
+          text={'Create'}
+          flat={false}
+          small={true}
+          waves={false}
+          extraClass={'hover-accent'}
+          onClick={e => this.onCreateTeamClick(e)}
+        /> : <div></div>
+
     return (
       <div>
         <PageTitle
@@ -150,14 +160,7 @@ class TeamsContainer extends React.Component {
           rightComponent={
             <div className={'uk-grid uk-grid-collapse'}>
               <div className={'uk-width-1-1 mt-15 uk-text-right'}>
-                <Button
-                  text={'Create'}
-                  flat={false}
-                  small={true}
-                  waves={false}
-                  extraClass={'hover-accent'}
-                  onClick={e => this.onCreateTeamClick(e)}
-                />
+                {rightComponent}
               </div>
             </div>
           }
