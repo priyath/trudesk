@@ -1945,6 +1945,39 @@ apiTickets.getOverdue = function (req, res) {
   })
 }
 
+apiTickets.getSummary = function (req, res) {
+  var ticketSchema = require('../../../models/ticket');
+  var departmentSchema = require('../../../models/department');
+  var groupSchema = require('../../../models/group');
+
+  async.waterfall(
+      [
+        function (next) {
+          if (!req.user.role.isAdmin && !req.user.role.isAgent) {
+            return groupSchema.getAllGroupsOfUserNoPopulate(req.user._id, next)
+          } else {
+            return departmentSchema.getDepartmentGroupsOfUser(req.user._id, next)
+          }
+        },
+        function (groups, next) {
+          var groupIds = groups.map(function (g) {
+            return g._id
+          })
+
+          ticketSchema.summary(groupIds, function (err, tickets) {
+            if (err) return next(err)
+            return next(null, tickets)
+          })
+        }
+      ],
+      function (err, groupTicketMap) {
+        if (err) return res.status(400).json({ success: false, error: err.message })
+
+        return res.json({ success: true, groupTicketMap: groupTicketMap })
+      }
+  )
+};
+
 apiTickets.getDeletedTickets = function (req, res) {
   var ticketSchema = require('../../../models/ticket')
   ticketSchema.getDeleted(function (err, tickets) {

@@ -18,7 +18,7 @@ class LocationsContainer extends React.Component {
     }
 
     componentDidMount () {
-        axios.get(`/api/v1/tickets/overdue`)
+        axios.get(`/api/v1/tickets/summary`)
             .then(res => {
                 const data = res.data.tickets || [];
 

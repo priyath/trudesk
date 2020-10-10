@@ -1355,6 +1355,132 @@ ticketSchema.statics.getOverdue = function (grpId, callback) {
   // });
 }
 
+ticketSchema.statics.summary = function (grpId, callback) {
+  if (_.isUndefined(grpId)) return callback('Invalid Group Ids - TicketSchema.GetOverdue()', null)
+
+  var self = this;
+
+  // Disable cache (TEMP 01/04/2019)
+  // var grpHash = hash(grpId);
+  // var cache = global.cache;
+  // if (cache) {
+  //     var overdue = cache.get('tickets:overdue:' + grpHash);
+  //     if (overdue)
+  //         return callback(null, overdue);
+  // }
+
+  async.waterfall(
+      [
+        function (next) {
+          return self
+              .model(COLLECTION)
+              .find({
+                group: { $in: grpId },
+                deleted: false
+              })
+              .select('_id status date updated group')
+              .populate('group', 'name coordinates')
+              .lean()
+              .exec(next)
+        },
+        function (tickets, next) {
+          var t = _.map(tickets, function (i) {
+            i.isOverdue = isTicketOverdue(i);
+            return _.transform(
+                i,
+                function (result, value, key) {
+                  if (key === '_id') result._id = value
+                  if (key === 'priority') result.overdueIn = value.overdueIn
+                  if (key === 'date') result.date = value
+                  if (key === 'updated') result.updated = value
+                  if (key === 'status') result.status = value
+                  if (key === 'group') result.group = value
+                  if (key === 'isOverdue') result.isOverdue = value
+                },
+                {}
+            )
+          });
+
+          return next(null, t)
+        },
+        function (tickets, next) {
+          const groupTicketMap = tickets.reduce((acc, t) => {
+            const groupId = t.group._id;
+            if (groupId in acc) {
+              acc[groupId]['tickets'].push(t);
+            } else {
+              acc[groupId] = {
+                'tickets': [t],
+                'groupInfo': t.group,
+              };
+            }
+
+            return acc;
+          }, {});
+          return next(null, groupTicketMap)
+        },
+      ],
+      function (err, tickets) {
+        if (err) return callback(err, null)
+        // Disable cache (TEMP 01/04/2019)
+        // if (cache) cache.set('tickets:overdue:' + grpHash, tickets, 600); //10min
+
+        return callback(null, tickets)
+      }
+  )
+
+  // var q = self.model(COLLECTION).find({group: {$in: grpId}, status: {$in: [0,1]}, deleted: false})
+  //     .$where(function() {
+  //         return this.priority.overdueIn === undefined;
+  //         var now = new Date();
+  //         var timeout = null;
+  //         if (this.updated) {
+  //             timeout = new Date(this.updated);
+  //             timeout.setMinutes(timeout.getMinutes() + this.priority.overdueIn);
+  //         } else {
+  //             timeout = new Date(this.date);
+  //             timeout.setMinutes(timeout.getMinutes() + this.priority.overdueIn);
+  //         }
+  //         return now > timeout;
+  //     }).select('_id uid subject updated');
+  //
+  // q.lean().exec(function(err, results) {
+  //     if (err) return callback(err, null);
+  //     if (cache) cache.set('tickets:overdue:' + grpHash, results, 600); //10min
+  //
+  //     return callback(null, results);
+  // });
+
+  // TODO: Turn on when REDIS is impl
+  // This will be pres through server reload
+  // redisCache.getCache('$trudesk:tickets:overdue' + grpHash, function(err, value) {
+  //     if (err) return callback(err, null);
+  //     if (value) {
+  //         console.log('served from redis');
+  //         return callback(null, JSON.parse(value.data));
+  //     } else {
+  //         var q = self.model(COLLECTION).find({group: {$in: grpId}, status: 1, deleted: false})
+  //             .$where(function() {
+  //                 var now = new Date();
+  //                 var updated = new Date(this.updated);
+  //                 var timeout = new Date(updated);
+  //                 timeout.setDate(timeout.getDate() + 2);
+  //                 return now > timeout;
+  //             }).select('_id uid subject updated');
+  //
+  //         return q.lean().exec(function(err, results) {
+  //             if (err) return callback(err, null);
+  //             if (cache) {
+  //                 cache.set('tickets:overdue:' + grpHash, results, 600);
+  //             }
+  //             redisCache.setCache('tickets:' + grpHash, results, function(err) {
+  //                 return callback(err, results);
+  //             }, 600);
+  //         });
+  //     }
+  // });
+}
+
 /**
  * Gets tickets via tag id
  * @memberof Ticket
@@ -1661,6 +1787,31 @@ function statusToString (status) {
   }
 
   return str
+}
+
+function isTicketOverdue (t) {
+  try {
+    var now = new Date();
+
+    if (!t.date && !t.updated) {
+      return false;
+    }
+
+    var timeout = null;
+    if (t.updated) {
+      var updated = new Date(t.updated);
+      timeout = new Date(updated);
+      timeout.setMinutes(updated.getMinutes() + t.priority.overdueIn);
+    } else {
+      var date = new Date(t.date);
+      timeout = new Date(date);
+      timeout.setMinutes(date.getMinutes() + t.priority.overdueIn);
+    }
+
+    return now > timeout;
+  } catch (e) {
+    return false;
+  }
 }
 
 module.exports = mongoose.model(COLLECTION, ticketSchema)
