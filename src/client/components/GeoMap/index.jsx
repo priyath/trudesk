@@ -57,6 +57,12 @@ const Map = ({ markers }) => {
                     markers.map((group) => {
                         const coordinates = group.coordinates;
                         if (coordinates) {
+                            let icon = `/img/map_markers/green-marker.png`;
+                            if (group.overdueTickets){
+                                icon = `/img/map_markers/red-marker.png`;
+                            } else if (group.openOrInProgressTickets) {
+                                icon = `/img/map_markers/yellow-marker.png`;
+                            }
                             return (
                                 <Marker
                                     key={group._id}
@@ -64,6 +70,7 @@ const Map = ({ markers }) => {
                                         lat: parseFloat(coordinates.latitude),
                                         lng: parseFloat(coordinates.longitude)
                                     }}
+                                    options={{icon: icon}}
                                 />
                             )
                         }
