@@ -6,6 +6,7 @@ import {
 } from 'react-google-maps';
 import { MarkerClusterer } from 'react-google-maps/lib/components/addons/MarkerClusterer';
 import silverMapStyle from './silverMapStyle.json';
+import CustMarker from './CustMarker';
 
 //import data from './data.json';
 
@@ -64,14 +65,13 @@ const Map = ({ markers, onMarkerClick }) => {
                                 icon = `/img/map_markers/yellow-marker.png`;
                             }
                             return (
-                                <Marker
+                                <CustMarker
+                                    icon={icon}
+                                    coordinates={coordinates}
                                     key={group._id}
-                                    onClick={()=>{ onMarkerClick(group._id)} }
-                                    position={{
-                                        lat: parseFloat(coordinates.latitude),
-                                        lng: parseFloat(coordinates.longitude)
-                                    }}
-                                    options={{icon: icon}}
+                                    groupId={group._id}
+                                    name={group.name}
+                                    onMarkerClick={onMarkerClick}
                                 />
                             )
                         }
