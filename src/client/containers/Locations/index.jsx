@@ -8,13 +8,16 @@ import Log from "../../logger";
 import helpers from "lib/helpers";
 import SpinLoader from "components/SpinLoader";
 
-const initTicketSummary = {
-    totalCount: 0,
-    closed: 0,
-    newT: 0,
-    inProgress: 0,
-    ready: 0,
-    overdue: 0,
+const getInitialTicketSummary = () => {
+    const initTicketSummary = {
+        totalCount: 0,
+        closed: 0,
+        newT: 0,
+        inProgress: 0,
+        ready: 0,
+        overdue: 0,
+    };
+    return initTicketSummary;
 };
 
 class LocationsContainer extends React.Component {
@@ -25,7 +28,7 @@ class LocationsContainer extends React.Component {
             groupTicketMap: {},
             groups: [],
             loaded: false,
-            ticketSummary: initTicketSummary,
+            ticketSummary: getInitialTicketSummary(),
             title: "Ticket Summary",
             selectedGroupId: null,
         };
@@ -57,7 +60,7 @@ class LocationsContainer extends React.Component {
 
             return acc;
 
-        }, initTicketSummary);
+        }, getInitialTicketSummary());
 
         this.setState({
             ticketSummary,

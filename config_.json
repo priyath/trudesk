@@ -1,0 +1,13 @@
+{
+  "mongo": {
+    "host": "localhost",
+    "port": "27017",
+    "username": "iteq",
+    "password": "iteq",
+    "database": "trudesk"
+  },
+  "tokens": {
+    "secret": "fec55cf9027b3acbfd5847e4fd14e65658de4128d26fce4abd0d05ec21d43cd33d6260ed",
+    "expires": 900
+  }
+}

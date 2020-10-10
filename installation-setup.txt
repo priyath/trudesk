@@ -1,0 +1,8 @@
+
+
+
+
+
+Setup steps
+
+1. Delete default teams and departments and create admin team and department.
