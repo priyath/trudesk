@@ -462,7 +462,7 @@ apiTickets.create = function (req, res) {
     tIssue = sanitizeHtml(tIssue).trim()
     ticket.issue = marked(tIssue)
     ticket.history = [HistoryItem]
-    ticket.subscribers = [req.user._id]
+    ticket.subscribers = defaultAssignee ? [req.user._id, defaultAssignee] : [req.user._id];
 
     if (defaultAssignee) {
       ticket.assignee = defaultAssignee;
