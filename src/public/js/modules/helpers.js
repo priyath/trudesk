@@ -1774,6 +1774,10 @@ define([
 
     var roles = helpers.parseRoleHierarchy(extRole._id)
 
+    const ownerRoleInHierarchy = roles.find(role => role === ownerRole._id);
+    if (!_.isUndefined(ownerRoleInHierarchy)) return true;
+
+
     var i = _.find(roles, function (o) {
       return o.toString() === ownerRole.toString()
     })
