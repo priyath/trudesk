@@ -1415,6 +1415,10 @@ ticketSchema.statics.summary = function (grpId, callback) {
               };
             }
 
+            acc[groupId].groupInfo['overdueTickets'] = acc[groupId].groupInfo['overdueTickets'] ? true : t.isOverdue;
+            acc[groupId].groupInfo['openOrInProgressTickets'] = acc[groupId].groupInfo['openOrInProgressTickets'] ? true
+                : t.status === 0 || t.status === 1;
+
             return acc;
           }, {});
           return next(null, groupTicketMap)

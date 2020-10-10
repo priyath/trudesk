@@ -4,30 +4,34 @@ import GeoMap from 'components/GeoMap'
 import PageTitle from "components/PageTitle";
 import PageContent from "components/PageContent";
 import axios from 'axios';
-import {head, orderBy} from "lodash";
 import Log from "../../logger";
 import helpers from "lib/helpers";
+import SpinLoader from "components/SpinLoader";
 
 class LocationsContainer extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            groups: []
+            groups: {},
+            loaded: false,
         };
     }
 
     componentDidMount () {
         axios.get(`/api/v1/tickets/summary`)
             .then(res => {
-                const data = res.data.tickets || [];
+                const groupTicketMap = res.data.groupTicketMap || {};
+                let groups = [];
 
-                const groups = data.map((el) => {
-                    return el.group;
-                }).filter((v,i,a)=>a.findIndex(t=>(t._id === v._id))===i);
+                for (let [key, value] of Object.entries(groupTicketMap)) {
+                    groups.push(value.groupInfo);
+                }
 
                 this.setState({
-                    groups
+                    groups: groups,
+                    groupTicketMap,
+                    loaded: true,
                 });
 
             })
@@ -40,6 +44,14 @@ class LocationsContainer extends React.Component {
 
     render () {
 
+        let mapComp;
+
+        if (this.state.loaded){
+            mapComp = <GeoMap markers={this.state.groups}/>;
+        } else {
+            mapComp = <SpinLoader active={true} />;
+        }
+
         return (
             <div>
                 <PageTitle
@@ -48,7 +60,7 @@ class LocationsContainer extends React.Component {
                 <PageContent padding={0} paddingBottom={0}>
                     <div className="uk-grid uk-margin-medium-bottom">
                         <div className="uk-width-2-3">
-                            <GeoMap markers={this.state.groups}/>
+                            {mapComp}
                         </div>
                     </div>
                 </PageContent>

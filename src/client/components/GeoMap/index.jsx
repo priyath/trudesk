@@ -10,7 +10,6 @@ import silverMapStyle from './silverMapStyle.json';
 //import data from './data.json';
 
 const Map = ({ markers }) => {
-    console.log(markers);
     return (
         <GoogleMap
             defaultZoom={8}
