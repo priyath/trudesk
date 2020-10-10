@@ -434,8 +434,13 @@ apiTickets.create = function (req, res) {
 
     // read default assignee value if available. We assume a group can have only one department and one team
     if (!err && departments) {
+
+      const departmentWithDefaultAssignee = departments.find(department => {
+        return department.teams.find(team => team.defaultAssignee);
+      });
+
       try {
-        defaultAssignee = departments[0].teams[0].defaultAssignee;
+        defaultAssignee = departmentWithDefaultAssignee.teams[0].defaultAssignee;
       } catch (e) {
         defaultAssignee = null;
       }
