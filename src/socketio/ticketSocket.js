@@ -69,7 +69,11 @@ events.onUpdateTicketStatus = function (socket) {
         t.save(function (err, t) {
           if (err) return true
 
-          // emitter.emit('ticket:updated', t)
+          emitter.emit('ticket:statusChange', {
+            ticket: t,
+            ownerId: ownerId,
+          });
+
           utils.sendToAllConnectedClients(io, 'updateTicketStatus', {
             tid: t._id,
             owner: t.owner,

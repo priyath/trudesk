@@ -428,7 +428,7 @@ var notifications = require('../notifications') // Load Push Events
 
             var notification = new NotificationSchema({
               owner: ticket.owner,
-              title: 'Comment Added to Ticket#' + ticket.uid,
+              title: 'Comment added to ticket#' + ticket.uid,
               message: ticket.subject,
               type: 1,
               data: { ticket: ticket },
@@ -446,9 +446,9 @@ var notifications = require('../notifications') // Load Push Events
 
             var notification = new NotificationSchema({
               owner: ticket.assignee,
-              title: 'Comment Added to Ticket#' + ticket.uid,
+              title: 'Comment added to ticket#' + ticket.uid,
               message: ticket.subject,
-              type: 2,
+              type: 1,
               data: { ticket: ticket },
               unread: true
             })
@@ -511,7 +511,8 @@ var notifications = require('../notifications') // Load Push Events
                   email
                     .render('ticket-comment-added', {
                       ticket: ticket,
-                      comment: comment
+                      comment: comment,
+                      status: util.statusToName(ticket.status)
                     })
                     .then(function (html) {
                       var mailOptions = {
@@ -544,6 +545,119 @@ var notifications = require('../notifications') // Load Push Events
       )
     })
   })
+
+  //TODO: look at generalizing this flow for ticket updates
+  emitter.on('ticket:statusChange', function ({ticket, ownerId}) {
+    async.parallel(
+        [
+          function (cb) {
+            if (ticket.owner._id.toString() === ownerId.toString()) return cb;
+
+            var notification = new NotificationSchema({
+              owner: ticket.owner,
+              title: `Status changed to ${util.statusToName(ticket.status)} on Ticket#${ticket.uid}`,
+              message: ticket.subject,
+              type: 1,
+              data: { ticket: ticket },
+              unread: true
+            })
+
+            notification.save(function (err) {
+              return cb(err)
+            })
+          },
+          function (cb) {
+            if (_.isUndefined(ticket.assignee)) return cb()
+            if (ticket.assignee._id.toString() ===ownerId.toString()) return cb
+            if (ticket.owner._id.toString() === ticket.assignee._id.toString()) return cb()
+
+            var notification = new NotificationSchema({
+              owner: ticket.assignee,
+              title: `Status changed to ${util.statusToName(ticket.status)} on Ticket#${ticket.uid}`,
+              message: ticket.subject,
+              type: 1,
+              data: { ticket: ticket },
+              unread: true
+            })
+
+            notification.save(function (err) {
+              return cb(err)
+            })
+          },
+          // Send email to subscribed users
+          function (c) {
+            //if (!mailerEnabled) return c()
+
+            var mailer = require('../mailer')
+            var emails = []
+            async.each(
+                ticket.subscribers,
+                function (member, cb) {
+                  if (_.isUndefined(member) || _.isUndefined(member.email)) return cb()
+                  if (member._id.toString() === ownerId.toString()) return cb()
+                  if (member.deleted) return cb()
+
+                  emails.push(member.email)
+
+                  cb()
+                },
+                function (err) {
+                  if (err) return c(err)
+
+                  emails = _.uniq(emails)
+
+                  if (_.size(emails) < 1) {
+                    return c()
+                  }
+
+                  var email = new Email({
+                    views: {
+                      root: templateDir,
+                      options: {
+                        extension: 'handlebars'
+                      }
+                    }
+                  })
+
+                  ticket.populate('comments.owner', function (err, ticket) {
+                    if (err) winston.warn(err)
+                    if (err) return c()
+
+                    email
+                        .render('ticket-comment-added', {
+                          ticket: ticket,
+                          status: util.statusToName(ticket.status)
+                        })
+                        .then(function (html) {
+                          var mailOptions = {
+                            to: emails.join(),
+                            subject: 'Updated: Ticket #' + ticket.uid + '-' + ticket.subject,
+                            html: html,
+                            generateTextFromHTML: true
+                          }
+
+                          mailer.sendMail(mailOptions, function (err) {
+                            if (err) winston.warn('[trudesk:events:sendSubscriberEmail] - ' + err)
+
+                            winston.debug('Sent [' + emails.length + '] emails.')
+                          })
+
+                          return c()
+                        })
+                        .catch(function (err) {
+                          winston.warn('[trudesk:events:sendSubscriberEmail] - ' + err)
+                          return c(err)
+                        })
+                  })
+                }
+            )
+          }
+        ],
+        function () {
+          // Blank
+        }
+    )
+  });
 
   emitter.on('ticket:setAssignee', function (data) {
     settingsSchema.getSettingsByName(['tps:enable', 'tps:username', 'tps:apikey'], function (err, tpsSettings) {

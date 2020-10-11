@@ -66,3 +66,25 @@ module.exports.disconnectAllClients = function (io) {
     io.sockets.sockets[sock].disconnect(true)
   })
 }
+
+module.exports.statusToName = (status) => {
+  var str = '';
+  switch (status) {
+    case 0:
+      str = 'New';
+      break;
+    case 1:
+      str = 'In Progress';
+      break;
+    case 2:
+      str = 'Ready';
+      break;
+    case 3:
+      str = 'Closed';
+      break;
+    default:
+      str = 'New';
+  }
+
+  return str
+}
