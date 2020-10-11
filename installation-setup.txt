@@ -1,8 +1,11 @@
+Pushing latest changes
+build using; yarn run build
 
+Delete existing data
 
-
-
-
-Setup steps
-
-1. Delete default teams and departments and create admin team and department.
+1. ssh into terminal
+2. stop running instance: pm2 stop trudesk
+3. access mongo: mongo
+4. drop database: use trudesk | db.dropDatabase()
+5. git pull latest changes
+6. restart pm2 app: pm2 start trudesk
