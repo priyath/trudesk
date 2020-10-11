@@ -86,7 +86,7 @@ const WrappedMap = withScriptjs(withGoogleMap(props => <Map {...props}/>));
 
 export default ({ markers, onMarkerClick }) => {
     return (
-        <div style={{height: `calc(100vh - 145px)` }}>
+        <div style={{height: `calc(100vh - 150px)` }}>
             <WrappedMap
                 googleMapURL={'https://maps.googleapis.com/maps/api/js?key=AIzaSyCQXPcmy5m-eemsBHdCK-fS40kF8hbWPJM&v=3.'
                 + 'exp&libraries=geometry,drawing,places'}

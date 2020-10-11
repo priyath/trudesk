@@ -139,7 +139,7 @@ class LocationsContainer extends React.Component {
                 onMarkerClick={this.onMarkerClick.bind(this)}
             />;
         } else {
-            mapComp = <SpinLoader active={true} />;
+            mapComp = <div>Loading...</div>;
         }
 
         const href = this.state.selectedGroupId ? `/tickets/filter/?f=1&gp=${this.state.selectedGroupId}` : `/tickets`;
@@ -149,7 +149,7 @@ class LocationsContainer extends React.Component {
                 <PageTitle
                     title={'Locations'}
                 />
-                <PageContent padding={0} paddingBottom={0}>
+                <PageContent padding={5} paddingBottom={0}>
                     <div className="uk-grid uk-margin-medium-bottom">
                         <div className="uk-width-2-3">
                             {mapComp}
@@ -169,37 +169,51 @@ class LocationsContainer extends React.Component {
                                     <td className="uk-width-6-10 uk-text-nowrap uk-text-muted uk-text-small">Total
                                         tickets:
                                     </td>
-                                    <td id="mostRequester" className="uk-width-4-10 uk-text-right  uk-text-small">{
-                                        this.state.ticketSummary.totalCount}
+                                    <td id="mostRequester" className="uk-width-4-10 uk-text-right  uk-text-small">
+                                        {this.state.ticketSummary.totalCount}
                                     </td>
                                 </tr>
 
                                 <tr className="uk-table-middle">
-                                    <td className="uk-width-6-10 uk-text-nowrap uk-text-muted uk-text-small">Ready/closed
+                                    <td className="uk-width-6-10 uk-text-nowrap uk-text-muted uk-text-small">New tickets:
+                                    </td>
+                                    <td id="mostAssignee" className="uk-width-4-10 uk-text-right  uk-text-small">
+                                        {this.state.ticketSummary.newT}
+                                    </td>
+                                </tr>
+
+                                <tr className="uk-table-middle">
+                                    <td className="uk-width-6-10 uk-text-nowrap uk-text-muted uk-text-small">In progress tickets:
+                                    </td>
+                                    <td id="mostAssignee" className="uk-width-4-10 uk-text-right  uk-text-small">
+                                        {this.state.ticketSummary.inProgress}
+                                    </td>
+                                </tr>
+
+                                <tr className="uk-table-middle">
+                                    <td className="uk-width-6-10 uk-text-nowrap uk-text-muted uk-text-small">Ready
                                         tickets:
                                     </td>
-                                    <td id="mostCommenter" className="uk-width-4-10 uk-text-right  uk-text-small">{
-                                        this.state.ticketSummary.ready + this.state.ticketSummary.closed
-                                    }
+                                    <td id="mostCommenter" className="uk-width-4-10 uk-text-right  uk-text-small">
+                                        {this.state.ticketSummary.ready}
                                     </td>
                                 </tr>
 
                                 <tr className="uk-table-middle">
-                                    <td className="uk-width-6-10 uk-text-nowrap uk-text-muted uk-text-small">New/In progress tickets:
+                                    <td className="uk-width-6-10 uk-text-nowrap uk-text-muted uk-text-small">Closed
+                                        tickets:
                                     </td>
-                                    <td id="mostAssignee" className="uk-width-4-10 uk-text-right  uk-text-small">{
-                                        this.state.ticketSummary.newT + this.state.ticketSummary.inProgress
-                                    }</td>
+                                    <td id="mostCommenter" className="uk-width-4-10 uk-text-right  uk-text-small">
+                                        {this.state.ticketSummary.closed}
+                                    </td>
                                 </tr>
 
-                                <tr className="uk-table-middle">
-                                    <td className="uk-width-6-10 uk-text-nowrap uk-text-muted uk-text-small">SLA
-                                        exceeded tickets:
+                                <tr className="uk-table-middle locations-overdue">
+                                    <td className="uk-width-6-10 uk-text-nowrap uk-text-muted uk-text-small">
+                                        <span className="locations-overdue">SLA exceeded tickets:</span>
                                     </td>
                                     <td className="uk-width-4-10 uk-text-right  uk-text-small">
-                                        {
-                                            this.state.ticketSummary.overdue
-                                        }
+                                        <span className="locations-overdue">{this.state.ticketSummary.overdue}</span>
                                     </td>
                                 </tr>
 
