@@ -1288,7 +1288,7 @@ ticketSchema.statics.getOverdue = function (grpId, callback) {
           .model(COLLECTION)
           .find({ _id: { $in: ids } })
           .limit(50)
-          .select('_id uid subject updated date group')
+          .select('_id uid status subject updated date group')
           .populate('group', 'name coordinates')
           .lean()
           .exec(next)

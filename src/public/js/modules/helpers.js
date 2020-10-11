@@ -2125,5 +2125,42 @@ define([
     $this.wrap(a)
   }
 
+  helpers.statusToName = function (status) {
+    var str = ''
+    switch (status) {
+      case 0:
+        str = 'New';
+        break;
+      case 1:
+        str = 'In Progress';
+        break;
+      case 2:
+        str = 'Ready';
+        break;
+      case 3:
+        str = 'Closed';
+        break;
+      default:
+        str = 'New';
+    }
+
+    return str
+  };
+
+  helpers.statusToClassName = status => {
+    switch (status) {
+      case 0:
+        return 'New';
+      case 1:
+        return 'Open';
+      case 2:
+        return 'Pending';
+      case 3:
+        return 'Closed';
+      default:
+        return 'New';
+    }
+  };
+
   return helpers
 })

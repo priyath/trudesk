@@ -71,6 +71,9 @@ define('pages/dashboard', [
             var overdueSpinner = overdueCard.find('.card-spinner')
             var html = ''
             _.each(_data.tickets, function (ticket) {
+
+              const priorityName = ticket.priority ? ticket.priority.name : '';
+              const priorityColor = ticket.priority ? ticket.priority.htmlColor : '';
               html += '<tr class="uk-table-middle">'
               html +=
                 '<td class="uk-width-1-10 uk-text-nowrap"><a href="/tickets/' +
@@ -79,9 +82,17 @@ define('pages/dashboard', [
                 ticket.uid +
                 '</a></td>'
               html +=
-                '<td class="uk-width-1-10 uk-text-nowrap"><span class="uk-badge ticket-status-open uk-width-1-1">In Progress</span></td>'
+                '<td class="uk-width-1-10 uk-text-nowrap"><span ' +
+                  'style="background: ' +
+                  priorityColor +
+                  '" class="uk-badge uk-width-1-1">' +
+                  priorityName
+                  + '</span></td>'
               html +=
-                  '<td class="uk-width-1-10 uk-text-nowrap"><span class="uk-badge ticket-status-open uk-width-1-1">In Progress</span></td>'
+                  '<td class="uk-width-1-10 uk-text-nowrap"><span class="uk-badge ticket-status-' +
+                  helpers.statusToClassName(ticket.status).toLowerCase() + ' uk-width-1-1">' +
+                  helpers.statusToName(ticket.status)
+                  + '</span></td>'
               html += '<td class="uk-width-6-10">' + ticket.subject + '</td>'
               if (ticket.updated) {
                 html +=
@@ -395,4 +406,5 @@ define('pages/dashboard', [
   }
 
   return dashboardPage
-})
+});
+
