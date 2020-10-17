@@ -178,6 +178,9 @@ define('pages/dashboard', [
             var completeAnimation = new CountUp('text_complete', parseInt(oldTextComplete), closedPercent, 0, 1.5)
             completeAnimation.start()
 
+            const textCompleteCount = $('#text_complete_count');
+            textCompleteCount.text(`(${closedCount})`);
+
             var pieComplete = $('#pie_complete')
             pieComplete.text(closedPercent + '/100')
             pieComplete.peity('donut', {
