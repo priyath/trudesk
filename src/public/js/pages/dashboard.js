@@ -26,6 +26,11 @@ define('pages/dashboard', [
   'history'
 ], function ($, _, helpers, CountUp, c3, d3, moment) {
   var dashboardPage = {}
+  let slaCounts = {
+    'critical': 0,
+    'urgent': 0,
+    'normal': 0,
+  }
 
   dashboardPage.init = function (callback) {
     $(document).ready(function () {
@@ -74,6 +79,17 @@ define('pages/dashboard', [
 
               const priorityName = ticket.priority ? ticket.priority.name : '';
               const priorityColor = ticket.priority ? ticket.priority.htmlColor : '';
+
+              if (priorityName === 'Critical') {
+                slaCounts.critical += 1;
+              } else if (priorityName === 'Urgent') {
+                slaCounts.urgent += 1;
+              } else if (priorityName === 'Normal') {
+                slaCounts.normal += 1;
+              } else {
+                // what?
+              }
+
               html += '<tr class="uk-table-middle">'
               html +=
                 '<td class="uk-width-1-10 uk-text-nowrap"><a href="/tickets/' +
@@ -109,6 +125,16 @@ define('pages/dashboard', [
               }
               html += '</tr>'
             })
+
+            const slaNames = Object.keys(slaCounts);
+
+            slaNames.forEach(name => {
+              const domId = `#sla_count_${name}`;
+              var $slaCountEl= $(domId);
+              var ticketCount = slaCounts[name];
+
+              $slaCountEl.text(ticketCount);
+            });
 
             $overdueTableBody.append(html)
             $overdueTableBody.ajaxify()
@@ -188,19 +214,6 @@ define('pages/dashboard', [
               width: 24,
               fill: ['#29b955', '#ccc']
             })
-
-            var $responseTimeText = $('#responseTime_text')
-            // var responseTime_graph = $('#responseTime_graph');
-            var oldResponseTime = $responseTimeText.text() === '--' ? 0 : $responseTimeText.text()
-            var responseTime = _data.ticketAvg
-            var responseTimeAnimation = new CountUp(
-              'responseTime_text',
-              parseInt(oldResponseTime),
-              responseTime,
-              0,
-              1.5
-            )
-            responseTimeAnimation.start()
 
             // QuickStats
             var mostRequester = $('#mostRequester')
