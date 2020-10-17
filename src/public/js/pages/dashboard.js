@@ -82,12 +82,8 @@ define('pages/dashboard', [
                 ticket.uid +
                 '</a></td>'
               html +=
-                '<td class="uk-width-1-10 uk-text-nowrap"><span ' +
-                  'style="background: ' +
-                  priorityColor +
-                  '" class="uk-badge uk-width-1-1">' +
-                  priorityName
-                  + '</span></td>'
+                '<td class="uk-width-1-10 uk-text-nowrap">' +
+                  priorityName + '</td>'
               html +=
                   '<td class="uk-width-1-10 uk-text-nowrap"><span class="uk-badge ticket-status-' +
                   helpers.statusToClassName(ticket.status).toLowerCase() + ' uk-width-1-1">' +
