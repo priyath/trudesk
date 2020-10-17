@@ -404,7 +404,7 @@ class TicketsContainer extends React.Component {
                 return (
                   <TableRow
                     key={ticket.get('_id')}
-                    className={`ticket-${status()} ${isOverdue() ? 'overdue' : ''}`}
+                    className={`ticket-${status()} ${isOverdue() ? 'overduedisabled' : ''}`}
                     clickable={true}
                     onClick={e => {
                       const td = e.target.closest('td')
