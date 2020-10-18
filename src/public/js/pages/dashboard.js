@@ -318,7 +318,8 @@ define('pages/dashboard', [
                     return ''
                   }
                 }
-              }
+              },
+              tooltip: { format: { value: function (value, ratio, id) { return value; } } }
             })
 
             $('#topTenTags')
@@ -399,6 +400,7 @@ define('pages/dashboard', [
                   }
                 }
               },
+              tooltip: { format: { value: function (value, ratio, id) { return value; } } }
             })
 
             $('#pieChart')
