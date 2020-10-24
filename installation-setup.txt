@@ -25,11 +25,3 @@ default settings
     - Notices - disable
 5. setup mailer
 6. delete and create admin team and groups
-
-updates
-
-1. ticket status rename and color coding
-2. notifications to comment owner, notifications on ticket status change
-3. coordinates configurable
-4. location view with endpoints
-5. dashboard overdue grid

@@ -185,6 +185,41 @@ var notifications = require('../notifications') // Load Push Events
                 })
               },
               function (c) {
+                const sms = require('../sms');
+
+                departmentSchema.getDepartmentsByGroup(ticket.group._id, function (err, departments) {
+                  let defaultAssignee;
+
+                  // read default assignee value if available. We assume a group can have only one department and one team
+                  if (!err && departments) {
+
+                    const departmentWithDefaultAssignee = departments.find(department => {
+                      return department.teams.find(team => team.defaultAssignee);
+                    });
+
+                    try {
+                      defaultAssignee = departmentWithDefaultAssignee.teams[0].defaultAssignee;
+
+                      userSchema.getUser(defaultAssignee, function (err, user) {
+                        if (err){
+                          return c();
+                        }
+
+                        sms.sendSms({
+                          group: ticket.group.name,
+                          subject: ticket.subject,
+                          priority: ticket.priority.name,
+                          tel: user.tel,
+                        }, ()=>{});
+                      });
+
+                    } catch (e) {
+                      defaultAssignee = null;
+                    }
+                  }
+                });
+              },
+              function (c) {
                 if (!ticket.group.public) return c()
                 var rolesWithPublic = permissions.getRoles('ticket:public')
                 rolesWithPublic = _.map(rolesWithPublic, 'id')
