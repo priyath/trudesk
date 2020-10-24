@@ -200,20 +200,23 @@ var notifications = require('../notifications') // Load Push Events
                     try {
                       defaultAssignee = departmentWithDefaultAssignee.teams[0].defaultAssignee;
 
-                      userSchema.getUser(defaultAssignee, function (err, user) {
-                        if (err){
-                          return c();
-                        }
+                      if (defaultAssignee) {
+                        userSchema.getUser(defaultAssignee, function (err, user) {
+                          if (err) {
+                            return c();
+                          }
 
-                        sms.sendSms({
-                          group: ticket.group.name,
-                          subject: ticket.subject,
-                          priority: ticket.priority.name,
-                          tel: user.tel,
-                        }, ()=>{});
-                      });
-
+                          sms.sendSms({
+                            group: ticket.group.name,
+                            subject: ticket.subject,
+                            priority: ticket.priority.name,
+                            tel: user.tel,
+                          }, () => {
+                          });
+                        });
+                      }
                     } catch (e) {
+                      console.log('Default assignee not assigned');
                       defaultAssignee = null;
                     }
                   }
