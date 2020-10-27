@@ -11,6 +11,11 @@ Running on server (Existing)
 4. yarn to install dependencies
 5. restart using pm2
 
+git clone https://github.com/priyath/trudesk.git
+git checkout feature/demo
+yarn
+pm2 start trudesk
+
 Setting up trudesk
 1. follow screen instructions
 

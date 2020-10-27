@@ -73,9 +73,14 @@ define('pages/dashboard', [
           url: '/api/v1/tickets/overdue',
           method: 'GET',
           success: function (_data) {
-            console.log('oevrdue bitch')
             var overdueSpinner = overdueCard.find('.card-spinner')
             var html = ''
+
+            // initialize to 0
+            slaCounts.critical = 0;
+            slaCounts.urgent = 0;
+            slaCounts.normal = 0;
+
             _.each(_data.tickets, function (ticket) {
 
               const priorityName = ticket.priority ? ticket.priority.name : '';
