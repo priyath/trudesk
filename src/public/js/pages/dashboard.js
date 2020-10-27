@@ -73,6 +73,7 @@ define('pages/dashboard', [
           url: '/api/v1/tickets/overdue',
           method: 'GET',
           success: function (_data) {
+            console.log('oevrdue bitch')
             var overdueSpinner = overdueCard.find('.card-spinner')
             var html = ''
             _.each(_data.tickets, function (ticket) {

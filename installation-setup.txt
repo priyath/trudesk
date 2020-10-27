@@ -7,8 +7,9 @@ Running on server (Existing)
 
 1. ssh into terminal
 2. delete repository and re-clone
-3. yarn to install dependencies
-4. restart using pm2
+3. checkout branch
+4. yarn to install dependencies
+5. restart using pm2
 
 Setting up trudesk
 1. follow screen instructions

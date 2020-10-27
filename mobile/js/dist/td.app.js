@@ -990,9 +990,14 @@ angular
             accesstoken: $localStorage.accessToken
           }
         })
+      },
+      overdueTickets: function () {
+        return $http.get('/api/v1/tickets/overdue', {
+          headers: {
+            accesstoken: $localStorage.accessToken
+          }
+        })
       }
-    }
-  })
 
   .factory('Groups', function ($http, $localStorage) {
     return {
@@ -1477,6 +1482,10 @@ angular
     if (path.indexOf('dashboard') === -1) $ionicNavBarDelegate.showBackButton(false)
     else $ionicNavBarDelegate.showBackButton(true)
 
+    $scope.criticalTickets = 0;
+    $scope.urgentTickets = 0;
+    $scope.normalTickets = 0;
+
     $scope.totalTickets = 0
     $scope.timespans = [
       { label: '30 Days', value: 30 },
@@ -1502,7 +1511,16 @@ angular
       })
     }
 
-    getStats(30)
+    function getOverdue () {
+      Tickets.overdueTickets().then((response) => {
+        console.log('------------------');
+        console.log(response.data);
+      })
+    }
+
+
+    getOverdue();
+    getStats(30);
     $scope.timespanChange = function ($event) {
       $scope.selectedTimespan = this.selectedTimespan
       getStats($scope.selectedTimespan)

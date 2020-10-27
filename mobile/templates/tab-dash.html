@@ -53,8 +53,16 @@
 
     <div class="list card">
       <div class="item">
-        <span class="text-muted text-small margin-bottom-5">Avg Reponse Time</span>
-        <h2 class="stat no-margin">{{ticketAvg}} hours</h2>
+        <span class="text-muted text-small margin-bottom-5">Overdue Tickets</span>
+
+        <h2 class="uk-margin-remove">
+          <span id="sla_count_critical" class="tickets-overdue">--</span>
+          <span id="text_complete_count_critical" class="uk-text-muted uk-text-small">{{criticalTickets}}</span>
+          <span id="sla_count_urgent" class="tickets-overdue">--</span>
+          <span id="text_complete_count_urgent" class="uk-text-muted uk-text-small">{{urgentTickets}}</span>
+          <span id="sla_count_normal" class="tickets-overdue">--</span>
+          <span id="text_complete_count_normal" class="uk-text-muted uk-text-small">{{normalTickets}}</span>
+        </h2>
         <div style="position: absolute; top: 30px; right: 25px;">
           <line-chart ng-model="lineChart" options="{height: 28, width: 64, fill: '#d1e4f6', stroke: '#0288d1'}"></line-chart>
         </div>
