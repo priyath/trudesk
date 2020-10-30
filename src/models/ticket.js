@@ -1214,10 +1214,18 @@ ticketSchema.statics.getTicketsWithSearchString = function (grps, search, callba
  * @param {Array} grpId Group Array of User
  * @param {QueryCallback} callback MongoDB Query Callback
  */
-ticketSchema.statics.getOverdue = function (grpId, callback) {
+ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
   if (_.isUndefined(grpId)) return callback('Invalid Group Ids - TicketSchema.GetOverdue()', null)
+  if (_.isUndefined(timespan) || _.isNaN(timespan) || timespan === 0) timespan = -1
 
-  var self = this
+  var self = this;
+
+  var today = moment
+      .utc()
+      .hour(23)
+      .minute(59)
+      .second(59)
+  var tsDate = today.clone().subtract(timespan, 'd');
 
   // Disable cache (TEMP 01/04/2019)
   // var grpHash = hash(grpId);
@@ -1236,7 +1244,8 @@ ticketSchema.statics.getOverdue = function (grpId, callback) {
           .find({
             group: { $in: grpId },
             status: { $in: [0, 1] },
-            deleted: false
+            deleted: false,
+            date: { $gte: tsDate.toDate(), $lte: today.toDate() },
           })
           .select('_id date updated')
           .lean()

@@ -1918,6 +1918,8 @@ apiTickets.getOverdue = function (req, res) {
     var departmentSchema = require('../../../models/department')
     var groupSchema = require('../../../models/group')
 
+    var timespan = req.params.timespan;
+
     async.waterfall(
       [
         function (next) {
@@ -1932,7 +1934,7 @@ apiTickets.getOverdue = function (req, res) {
             return g._id
           })
 
-          ticketSchema.getOverdue(groupIds, function (err, tickets) {
+          ticketSchema.getOverdue(groupIds, timespan, function (err, tickets) {
             if (err) return next(err)
 
             var sorted = _.sortBy(tickets, 'uid').reverse()

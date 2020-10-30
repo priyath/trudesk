@@ -61,100 +61,6 @@ define('pages/dashboard', [
         // colors: ['#2196f3']
       }
 
-      var showOverdue =
-        $('#__showOverdueTickets')
-          .text()
-          .toLowerCase() === 'true'
-      if (true) {
-        var overdueCard = $('#overdue_tickets')
-        var $overdueTableBody = overdueCard.find('table.uk-table > tbody')
-        $overdueTableBody.empty() // Clear
-        $.ajax({
-          url: '/api/v1/tickets/overdue',
-          method: 'GET',
-          success: function (_data) {
-            var overdueSpinner = overdueCard.find('.card-spinner')
-            var html = ''
-
-            // initialize to 0
-            slaCounts.critical = 0;
-            slaCounts.urgent = 0;
-            slaCounts.normal = 0;
-
-            _.each(_data.tickets, function (ticket) {
-
-              const priorityName = ticket.priority ? ticket.priority.name : '';
-              const priorityColor = ticket.priority ? ticket.priority.htmlColor : '';
-
-              if (priorityName === 'Critical') {
-                slaCounts.critical += 1;
-              } else if (priorityName === 'Urgent') {
-                slaCounts.urgent += 1;
-              } else if (priorityName === 'Normal') {
-                slaCounts.normal += 1;
-              } else {
-                // what?
-              }
-
-              html += '<tr class="uk-table-middle">'
-              html +=
-                '<td class="uk-width-1-10 uk-text-nowrap"><a href="/tickets/' +
-                ticket.uid +
-                '">T#' +
-                ticket.uid +
-                '</a></td>'
-              html +=
-                '<td class="uk-width-1-10 uk-text-nowrap">' +
-                  priorityName + '</td>'
-              html +=
-                  '<td class="uk-width-1-10 uk-text-nowrap"><span class="uk-badge ticket-status-' +
-                  helpers.statusToClassName(ticket.status).toLowerCase() + ' uk-width-1-1">' +
-                  helpers.statusToName(ticket.status)
-                  + '</span></td>'
-              html += '<td class="uk-width-6-10">' + ticket.subject + '</td>'
-              if (ticket.updated) {
-                html +=
-                  '<td class="uk-width-2-10 uk-text-right uk-text-muted uk-text-small">' +
-                  moment
-                    .utc(ticket.updated)
-                    .tz(helpers.getTimezone())
-                    .format(dashboardPage.shortDateFormat) +
-                  '</td>'
-              } else {
-                html +=
-                  '<td class="uk-width-2-10 uk-text-right uk-text-muted uk-text-small">' +
-                  moment
-                    .utc(ticket.date)
-                    .tz(helpers.getTimezone())
-                    .format(dashboardPage.shortDateFormat) +
-                  '</td>'
-              }
-              html += '</tr>'
-            })
-
-            const slaNames = Object.keys(slaCounts);
-
-            slaNames.forEach(name => {
-              const domId = `#sla_count_${name}`;
-              var $slaCountEl= $(domId);
-              var ticketCount = slaCounts[name];
-
-              $slaCountEl.text(ticketCount);
-            });
-
-            $overdueTableBody.append(html)
-            $overdueTableBody.ajaxify()
-            overdueSpinner.animate({ opacity: 0 }, 600, function () {
-              $(this).hide()
-            })
-          },
-          error: function (err) {
-            console.log('[trudesk:dashboard:loadOverdue] Error - ' + err.responseText)
-            helpers.UI.showSnackbar(err.responseText, true)
-          }
-        })
-      }
-
       getData(30)
 
       $('#select_timespan').on('change', function () {
@@ -163,6 +69,100 @@ define('pages/dashboard', [
       })
 
       function getData (timespan) {
+        var showOverdue =
+            $('#__showOverdueTickets')
+                .text()
+                .toLowerCase() === 'true'
+        if (true) {
+          var overdueCard = $('#overdue_tickets')
+          var $overdueTableBody = overdueCard.find('table.uk-table > tbody')
+          $overdueTableBody.empty() // Clear
+          $.ajax({
+            url: '/api/v1/tickets/overdue/' + timespan,
+            method: 'GET',
+            success: function (_data) {
+              var overdueSpinner = overdueCard.find('.card-spinner')
+              var html = ''
+
+              // initialize to 0
+              slaCounts.critical = 0;
+              slaCounts.urgent = 0;
+              slaCounts.normal = 0;
+
+              _.each(_data.tickets, function (ticket) {
+
+                const priorityName = ticket.priority ? ticket.priority.name : '';
+                const priorityColor = ticket.priority ? ticket.priority.htmlColor : '';
+
+                if (priorityName === 'Critical') {
+                  slaCounts.critical += 1;
+                } else if (priorityName === 'Urgent') {
+                  slaCounts.urgent += 1;
+                } else if (priorityName === 'Normal') {
+                  slaCounts.normal += 1;
+                } else {
+                  // what?
+                }
+
+                html += '<tr class="uk-table-middle">'
+                html +=
+                    '<td class="uk-width-1-10 uk-text-nowrap"><a href="/tickets/' +
+                    ticket.uid +
+                    '">T#' +
+                    ticket.uid +
+                    '</a></td>'
+                html +=
+                    '<td class="uk-width-1-10 uk-text-nowrap">' +
+                    priorityName + '</td>'
+                html +=
+                    '<td class="uk-width-1-10 uk-text-nowrap"><span class="uk-badge ticket-status-' +
+                    helpers.statusToClassName(ticket.status).toLowerCase() + ' uk-width-1-1">' +
+                    helpers.statusToName(ticket.status)
+                    + '</span></td>'
+                html += '<td class="uk-width-6-10">' + ticket.subject + '</td>'
+                if (ticket.updated) {
+                  html +=
+                      '<td class="uk-width-2-10 uk-text-right uk-text-muted uk-text-small">' +
+                      moment
+                          .utc(ticket.updated)
+                          .tz(helpers.getTimezone())
+                          .format(dashboardPage.shortDateFormat) +
+                      '</td>'
+                } else {
+                  html +=
+                      '<td class="uk-width-2-10 uk-text-right uk-text-muted uk-text-small">' +
+                      moment
+                          .utc(ticket.date)
+                          .tz(helpers.getTimezone())
+                          .format(dashboardPage.shortDateFormat) +
+                      '</td>'
+                }
+                html += '</tr>'
+              })
+
+              const slaNames = Object.keys(slaCounts);
+
+              slaNames.forEach(name => {
+                const domId = `#sla_count_${name}`;
+                var $slaCountEl= $(domId);
+                var ticketCount = slaCounts[name];
+
+                $slaCountEl.text(ticketCount);
+              });
+
+              $overdueTableBody.append(html)
+              $overdueTableBody.ajaxify()
+              overdueSpinner.animate({ opacity: 0 }, 600, function () {
+                $(this).hide()
+              })
+            },
+            error: function (err) {
+              console.log('[trudesk:dashboard:loadOverdue] Error - ' + err.responseText)
+              helpers.UI.showSnackbar(err.responseText, true)
+            }
+          })
+        }
+
         $.ajax({
           url: '/api/v1/tickets/stats/' + timespan,
           method: 'GET',
