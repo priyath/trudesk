@@ -72,6 +72,11 @@ define('pages/dashboard', [
       let closedTickets = 0;
 
       function getData (timespan) {
+        $('#topTenTags')
+            .parents('.panel')
+            .find('.card-spinner')
+            .css({ display: 'block', opacity: 1 });
+
         var showOverdue =
             $('#__showOverdueTickets')
                 .text()
@@ -122,6 +127,82 @@ define('pages/dashboard', [
                 width: 24,
                 fill: ['#29b955', '#ccc']
               });
+
+              // tag data
+              const tags = _data.dashboardData.tagData;
+              var arr = _.map(tags, function (v, key) {
+                // TODO: this impl should be changed
+                const tagName = key.split(',')[0];
+                const tagId = key.split(',')[1];
+                return [tagId, v, tagName];
+              });
+
+              arr = _.first(arr, 10);
+              var colors = [
+                '#e74c3c',
+                '#3498db',
+                '#9b59b6',
+                '#34495e',
+                '#1abc9c',
+                '#2ecc71',
+                '#03A9F4',
+                '#00BCD4',
+                '#009688',
+                '#4CAF50',
+                '#FF5722',
+                '#CDDC39',
+                '#FFC107',
+                '#00E5FF',
+                '#E040FB',
+                '#607D8B'
+              ];
+
+              const nameMap = arr.reduce(function(map, el) {
+                map[el[0]] = el[2];
+                return map;
+              }, {});
+
+
+              var c = _.object(
+                  _.map(arr, function (v) {
+                    return v[0];
+                  }),
+                  _.shuffle(colors)
+              )
+
+              c3.generate({
+                bindto: d3.select('#topTenTags'),
+                size: {
+                  height: 200
+                },
+                data: {
+                  columns: arr,
+                  type: 'donut',
+                  onclick: function (data, i) {
+                    window.location.href = `/tickets/filter/?f=1&tag=${data.id}`
+                    ;
+                  },
+                  colors: c,
+                  empty: { label: { text: 'No Data Available' } },
+                  labels: true,
+                  names: nameMap
+                },
+                donut: {
+                  label: {
+                    format: function () {
+                      return ''
+                    }
+                  }
+                },
+                tooltip: { format: { value: function (value, ratio, id) { return value; } } }
+              })
+
+              $('#topTenTags')
+                  .parents('.panel')
+                  .find('.card-spinner')
+                  .animate({ opacity: 0 }, 600, function () {
+                    $(this).hide()
+                  })
 
               // initialize to 0
               slaCounts.critical = 0;
@@ -256,90 +337,6 @@ define('pages/dashboard', [
           error: function (err) {
             console.log('[trudesk:dashboard:getData] Error - ' + err.responseText)
             helpers.UI.showSnackbar(err.responseText, true)
-          }
-        })
-
-        $('#topTenTags')
-          .parents('.panel')
-          .find('.card-spinner')
-          .css({ display: 'block', opacity: 1 })
-        $.ajax({
-          url: '/api/v1/tickets/count/tags/' + timespan,
-          method: 'GET',
-          success: function (data) {
-            var arr = _.map(data.tags, function (v, key) {
-              // TODO: this impl should be changed
-              const tagName = key.split(',')[0];
-              const tagId = key.split(',')[1];
-              return [tagId, v, tagName]
-            })
-
-            arr = _.first(arr, 10)
-            var colors = [
-              '#e74c3c',
-              '#3498db',
-              '#9b59b6',
-              '#34495e',
-              '#1abc9c',
-              '#2ecc71',
-              '#03A9F4',
-              '#00BCD4',
-              '#009688',
-              '#4CAF50',
-              '#FF5722',
-              '#CDDC39',
-              '#FFC107',
-              '#00E5FF',
-              '#E040FB',
-              '#607D8B'
-            ]
-
-            const nameMap = arr.reduce(function(map, el) {
-              map[el[0]] = el[2];
-              return map;
-            }, {});
-
-
-            var c = _.object(
-              _.map(arr, function (v) {
-                return v[0]
-              }),
-              _.shuffle(colors)
-            )
-
-            c3.generate({
-              bindto: d3.select('#topTenTags'),
-              size: {
-                height: 200
-              },
-              data: {
-                columns: arr,
-                type: 'donut',
-                onclick: function (data, i) {
-                  window.location.href = `/tickets/filter/?f=1&tag=${data.id}`
-                  ;
-                },
-                colors: c,
-                empty: { label: { text: 'No Data Available' } },
-                labels: true,
-                names: nameMap
-              },
-              donut: {
-                label: {
-                  format: function () {
-                    return ''
-                  }
-                }
-              },
-              tooltip: { format: { value: function (value, ratio, id) { return value; } } }
-            })
-
-            $('#topTenTags')
-              .parents('.panel')
-              .find('.card-spinner')
-              .animate({ opacity: 0 }, 600, function () {
-                $(this).hide()
-              })
           }
         })
 

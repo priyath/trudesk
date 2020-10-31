@@ -1319,15 +1319,18 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
       function (tickets, next) {
         return self
             .model(COLLECTION)
-            .count({
+            .find({
               deleted: false,
               date: { $gte: tsDate.toDate(), $lte: today.toDate() },
             })
-            .exec(function (err, totalTicketCount) {
-                return next(null, {tickets, totalTicketCount})
+            .exec(function (err, totalTicketList) {
+                const tagStats = require('../cache/tagStats');
+                tagStats(totalTicketList, timespan, function (err, tagData) {
+                  return next(null, {tickets, totalTicketCount: totalTicketList.length, tagData})
+                })
               });
       },
-      function ({tickets, totalTicketCount}, next) {
+      function ({tickets, totalTicketCount, tagData}, next) {
         return self
             .model(COLLECTION)
             .count({
@@ -1336,7 +1339,7 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
               date: { $gte: tsDate.toDate(), $lte: today.toDate() },
             })
             .exec(function (err, closedTicketCount) {
-              return next(null, {tickets, totalTicketCount, closedTicketCount})
+              return next(null, {tickets, totalTicketCount, closedTicketCount, tagData})
             });
       }
     ],

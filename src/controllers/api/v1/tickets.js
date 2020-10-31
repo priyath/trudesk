@@ -1902,7 +1902,7 @@ apiTickets.getTags = function (req, res) {
  * @apiSuccess {boolean} success Successfully?
  *
  */
-apiTickets.getOverdue = function (req, res) {
+apiTickets.getDashboardStats = function (req, res) {
   var settingSchema = require('../../../models/setting')
   settingSchema.getSettingByName('showOverdueTickets:enable', function (err, setting) {
     if (err) return res.status(400).json({ success: false, error: err.message })
@@ -1943,6 +1943,7 @@ apiTickets.getOverdue = function (req, res) {
               "overdueTickets": sorted,
               "totalTicketCount": resultObject.totalTicketCount,
               "closedTicketCount": resultObject.closedTicketCount,
+              "tagData": resultObject.tagData,
             })
           })
         }
