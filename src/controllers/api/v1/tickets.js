@@ -1934,19 +1934,23 @@ apiTickets.getOverdue = function (req, res) {
             return g._id
           })
 
-          ticketSchema.getOverdue(groupIds, timespan, function (err, tickets) {
-            if (err) return next(err)
-
+          ticketSchema.getOverdue(groupIds, timespan, function (err, resultObject) {
+            if (err) return next(err);
+            let tickets = resultObject.tickets;
             var sorted = _.sortBy(tickets, 'uid').reverse()
 
-            return next(null, sorted)
+            return next(null, {
+              "overdueTickets": sorted,
+              "totalTicketCount": resultObject.totalTicketCount,
+              "closedTicketCount": resultObject.closedTicketCount,
+            })
           })
         }
       ],
-      function (err, overdueTickets) {
+      function (err, dashboardData) {
         if (err) return res.status(400).json({ success: false, error: err.message })
 
-        return res.json({ success: true, tickets: overdueTickets })
+        return res.json({ success: true, dashboardData })
       }
     )
   })

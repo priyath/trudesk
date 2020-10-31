@@ -68,6 +68,9 @@ define('pages/dashboard', [
         getData(self.val())
       })
 
+      let totalTickets = 0;
+      let closedTickets = 0;
+
       function getData (timespan) {
         var showOverdue =
             $('#__showOverdueTickets')
@@ -78,18 +81,54 @@ define('pages/dashboard', [
           var $overdueTableBody = overdueCard.find('table.uk-table > tbody')
           $overdueTableBody.empty() // Clear
           $.ajax({
-            url: '/api/v1/tickets/overdue/' + timespan,
+            url: '/api/v1/tickets/dashboard-stats/' + timespan,
             method: 'GET',
             success: function (_data) {
               var overdueSpinner = overdueCard.find('.card-spinner')
               var html = ''
+
+              totalTickets = _data.dashboardData.totalTicketCount || 0;
+              closedTickets = _data.dashboardData.closedTicketCount || 0;
+
+              const tCount = totalTickets;
+
+              let ticketCount = $('#ticketCount');
+              const oldTicketCount = ticketCount.text() === '--' ? 0 : ticketCount.text();
+              const totalTicketText = 'Total Tickets (last ' + timespan + 'd)';
+              // if (timespan == 0)
+              //     totalTicketText = 'Total Tickets (lifetime)';
+              ticketCount
+                  .parents('.tru-card-content')
+                  .find('span.uk-text-small')
+                  .text(totalTicketText);
+              const theAnimation = new CountUp('ticketCount', parseInt(oldTicketCount), tCount, 0, 1.5);
+              theAnimation.start();
+
+              const closedCount = Number(closedTickets);
+              const closedPercent = Math.round((closedCount / tCount) * 100);
+
+              let textComplete = $('#text_complete');
+              let oldTextComplete = textComplete.text() === '--' ? 0 : textComplete.text();
+              const completeAnimation = new CountUp('text_complete', parseInt(oldTextComplete), closedPercent, 0, 1.5);
+              completeAnimation.start();
+
+              const textCompleteCount = $('#text_complete_count');
+              textCompleteCount.text(`(${closedCount})`);
+
+              var pieComplete = $('#pie_complete')
+              pieComplete.text(closedPercent + '/100')
+              pieComplete.peity('donut', {
+                height: 24,
+                width: 24,
+                fill: ['#29b955', '#ccc']
+              });
 
               // initialize to 0
               slaCounts.critical = 0;
               slaCounts.urgent = 0;
               slaCounts.normal = 0;
 
-              _.each(_data.tickets, function (ticket) {
+              _.each(_data.dashboardData.overdueTickets, function (ticket) {
 
                 const priorityName = ticket.priority ? ticket.priority.name : '';
                 const priorityColor = ticket.priority ? ticket.priority.htmlColor : '';
@@ -187,39 +226,6 @@ define('pages/dashboard', [
               parms.data = MG.convert.date(_data.data, 'date')
               MG.data_graphic(parms)
             }
-
-            var tCount = _data.ticketCount
-
-            var ticketCount = $('#ticketCount')
-            var oldTicketCount = ticketCount.text() === '--' ? 0 : ticketCount.text()
-            var totalTicketText = 'Total Tickets (last ' + timespan + 'd)'
-            // if (timespan == 0)
-            //     totalTicketText = 'Total Tickets (lifetime)';
-            ticketCount
-              .parents('.tru-card-content')
-              .find('span.uk-text-small')
-              .text(totalTicketText)
-            var theAnimation = new CountUp('ticketCount', parseInt(oldTicketCount), tCount, 0, 1.5)
-            theAnimation.start()
-
-            var closedCount = Number(_data.closedCount)
-            var closedPercent = Math.round((closedCount / tCount) * 100)
-
-            var textComplete = $('#text_complete')
-            var oldTextComplete = textComplete.text() === '--' ? 0 : textComplete.text()
-            var completeAnimation = new CountUp('text_complete', parseInt(oldTextComplete), closedPercent, 0, 1.5)
-            completeAnimation.start()
-
-            const textCompleteCount = $('#text_complete_count');
-            textCompleteCount.text(`(${closedCount})`);
-
-            var pieComplete = $('#pie_complete')
-            pieComplete.text(closedPercent + '/100')
-            pieComplete.peity('donut', {
-              height: 24,
-              width: 24,
-              fill: ['#29b955', '#ccc']
-            })
 
             // QuickStats
             var mostRequester = $('#mostRequester')

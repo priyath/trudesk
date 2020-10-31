@@ -1301,14 +1301,51 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
           .populate('group', 'name coordinates')
           .lean()
           .exec(next)
+      },
+      // function (tickets, next) {
+      //   return self
+      //       .model(COLLECTION)
+      //       .aggregate([
+      //         {"$group": {_id: '$group', count: {$sum: 1}}},
+      //       ])
+      //       .exec(function (err, groupCount) {
+      //         groupSchema.populate(groupCount, {path: '_id', select: {'name': 1, 'members': 0}}, function (err, results) {
+      //               if (err) return winston.warn(err);
+      //               return next(null, {tickets, results})
+      //             }
+      //         );
+      //       });
+      // }
+      function (tickets, next) {
+        return self
+            .model(COLLECTION)
+            .count({
+              deleted: false,
+              date: { $gte: tsDate.toDate(), $lte: today.toDate() },
+            })
+            .exec(function (err, totalTicketCount) {
+                return next(null, {tickets, totalTicketCount})
+              });
+      },
+      function ({tickets, totalTicketCount}, next) {
+        return self
+            .model(COLLECTION)
+            .count({
+              deleted: false,
+              status: { $in: [3] },
+              date: { $gte: tsDate.toDate(), $lte: today.toDate() },
+            })
+            .exec(function (err, closedTicketCount) {
+              return next(null, {tickets, totalTicketCount, closedTicketCount})
+            });
       }
     ],
-    function (err, tickets) {
+    function (err, resultObject) {
       if (err) return callback(err, null)
       // Disable cache (TEMP 01/04/2019)
       // if (cache) cache.set('tickets:overdue:' + grpHash, tickets, 600); //10min
 
-      return callback(null, tickets)
+      return callback(null, resultObject)
     }
   )
 
