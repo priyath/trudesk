@@ -6,7 +6,7 @@ const locationController = {};
 
 locationController.get = function (req, res) {
     const user = req.user;
-    if (_.isUndefined(user) || !permissions.canThis(user.role, 'departments:view')) {
+    if (_.isUndefined(user)) {
         return res.redirect('/');
     }
 
