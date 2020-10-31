@@ -18,12 +18,13 @@ define('pages/reportsBreakdown', [
   'modules/helpers',
   'countup',
   'c3',
+  'd3',
   'd3pie',
   'moment',
   'metricsgraphics',
   'peity',
   'history'
-], function ($, _, helpers, CountUp, c3, d3pie, moment) {
+], function ($, _, helpers, CountUp, c3, d3, d3pie, moment) {
   var reportsBreakdownPage = {}
 
   reportsBreakdownPage.init = function (callback) {
@@ -76,6 +77,7 @@ define('pages/reportsBreakdown', [
               MG.data_graphic(parms)
             }
 
+            const slaCounts = _data.data.overdueStats;
             var tCount = _data.data.ticketCount
             var ticketCount = $('#ticketCount')
             var oldTicketCount = ticketCount.text() === '--' ? 0 : ticketCount.text()
@@ -95,6 +97,9 @@ define('pages/reportsBreakdown', [
             var completeAnimation = new CountUp('text_complete', parseInt(oldTextComplete), closedPercent, 0, 1.5)
             completeAnimation.start()
 
+            const textCompleteCount = $('#text_complete_count');
+            textCompleteCount.text(`(${closedCount})`);
+
             var pieComplete = $('#pie_complete')
             pieComplete.text(closedPercent + '/100')
             pieComplete.peity('donut', {
@@ -103,18 +108,15 @@ define('pages/reportsBreakdown', [
               fill: ['#29b955', '#ccc']
             })
 
-            var responseTimeText = $('#responseTime_text')
-            // var responseTime_graph = $('#responseTime_graph');
-            var oldResponseTime = responseTimeText.text() === '--' ? 0 : responseTimeText.text()
-            var responseTime = _data.data.avgResponse
-            var responseTimeAnimation = new CountUp(
-              'responseTime_text',
-              parseInt(oldResponseTime),
-              responseTime,
-              0,
-              1.5
-            )
-            responseTimeAnimation.start()
+            const slaNames = Object.keys(slaCounts);
+
+            slaNames.forEach(name => {
+              const domId = `#sla_count_${name}`;
+              var $slaCountEl= $(domId);
+              var ticketCount = slaCounts[name];
+
+              $slaCountEl.text(ticketCount);
+            });
 
             var recentTicketsBody = $('tbody.recent-tickets')
             recentTicketsBody.html('')
@@ -156,16 +158,27 @@ define('pages/reportsBreakdown', [
               html += moment
                 .utc(ticket.updated)
                 .tz(helpers.getTimezone())
-                .format(helpers.getShortDateFormat())
+                .format(helpers.getShortDateFormat());
               html += '</td>'
               html += '</tr>'
             })
 
             recentTicketsBody.append(html)
 
-            var arr = _.map(_data.data.tags, function (v, key) {
-              return [key, v]
-            })
+            // tag data
+            const tags = _data.data.tags;
+            let idx = 0;
+            var arr = _.map(tags, function (v, key) {
+              // TODO: this impl should be changed
+              const tagName = key.split(',')[0];
+              idx += 1;
+              return [idx, v, tagName];
+            });
+
+            const nameMap = arr.reduce(function(map, el) {
+              map[el[0]] = el[2];
+              return map;
+            }, {});
 
             var colors = [
               '#e53935',
@@ -195,7 +208,10 @@ define('pages/reportsBreakdown', [
               data: {
                 columns: arr,
                 type: 'donut',
-                colors: c
+                colors: c,
+                empty: { label: { text: 'No Data Available' } },
+                labels: true,
+                names: nameMap
               },
               donut: {
                 label: {
@@ -203,8 +219,9 @@ define('pages/reportsBreakdown', [
                     return ''
                   }
                 }
-              }
-            })
+              },
+              tooltip: { format: { value: function (value, ratio, id) { return value; } } }
+            });
 
             helpers.UI.matchHeight()
           }

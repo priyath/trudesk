@@ -61,31 +61,52 @@ function buildGraphData (arr, days, callback) {
   return graphData
 }
 
-function buildAvgResponse (ticketArray, callback) {
-  var cbObj = {}
-  var $ticketAvg = []
-  _.each(ticketArray, function (ticket) {
-    if (_.isUndefined(ticket.comments) || _.size(ticket.comments) < 1) return
+function buildOverdueStats (tickets, callback) {
+  let slaCounts = {
+    'critical': 0,
+    'urgent': 0,
+    'normal': 0,
+  };
 
-    var ticketDate = moment(ticket.date)
-    var firstCommentDate = moment(ticket.comments[0].date)
+  var now = new Date();
+   _.forEach(tickets, function (t) {
+     const priority = t.priority;
 
-    var diff = firstCommentDate.diff(ticketDate, 'seconds')
-    $ticketAvg.push(diff)
-  })
+    if (!t.date && !t.updated) {
+      return false;
+    }
 
-  var ticketAvgTotal = _($ticketAvg).reduce(function (m, x) {
-    return m + x
-  }, 0)
+    var timeout = null;
+    if (t.updated) {
+      var updated = new Date(t.updated);
+      timeout = new Date(updated);
+      timeout.setMinutes(updated.getMinutes() + priority.overdueIn);
+    } else {
+      var date = new Date(t.date);
+      timeout = new Date(date);
+      timeout.setMinutes(date.getMinutes() + priority.overdueIn);
+    }
 
-  var tvt = moment.duration(Math.round(ticketAvgTotal / _.size($ticketAvg)), 'seconds').asHours()
-  cbObj.avgResponse = Math.floor(tvt)
+    if (now > timeout) {
+      const priorityName = priority ? priority.name : '';
+
+      if (priorityName === 'Critical') {
+        slaCounts.critical += 1;
+      } else if (priorityName === 'Urgent') {
+        slaCounts.urgent += 1;
+      } else if (priorityName === 'Normal') {
+        slaCounts.normal += 1;
+      } else {
+        // what?
+      }
+    }
+  });
 
   if (_.isFunction(callback)) {
-    return callback(cbObj)
+    return callback({overdueStats: slaCounts});
   }
 
-  return cbObj
+  return {overdueStats: slaCounts};
 }
 
 /**
@@ -1580,17 +1601,17 @@ apiTickets.getTicketStatsForGroup = function (req, res) {
           r.graphData = graphData
 
           // Get average Response
-          buildAvgResponse(tickets, function (obj) {
+          buildOverdueStats(tickets, function (obj) {
             if (_.isUndefined(obj)) {
               return callback(null, r)
             }
 
-            r.avgResponse = obj.avgResponse
+            r.overdueStats = obj.overdueStats
 
             return callback(null, r)
           })
         })
-      }
+      },
     ],
     function (err, results) {
       if (err) return res.status(400).json({ success: false, error: err })
@@ -1599,7 +1620,7 @@ apiTickets.getTicketStatsForGroup = function (req, res) {
       data.recentTickets = results.recentTickets
       data.closedCount = _.size(results.closedTickets)
       data.graphData = results.graphData
-      data.avgResponse = results.avgResponse
+      data.overdueStats = results.overdueStats
       data.tags = tags
 
       return res.json({ success: true, data: data })
@@ -1662,12 +1683,12 @@ apiTickets.getTicketStatsForUser = function (req, res) {
           r.graphData = graphData
 
           // Get average Response
-          buildAvgResponse(tickets, function (obj) {
+          buildOverdueStats(tickets, function (obj) {
             if (_.isUndefined(obj)) {
               return callback(null, r)
             }
 
-            r.avgResponse = obj.avgResponse
+            r.overdueStats = obj.overdueStats
 
             return callback(null, r)
           })
@@ -1681,7 +1702,7 @@ apiTickets.getTicketStatsForUser = function (req, res) {
       data.recentTickets = results.recentTickets
       data.closedCount = _.size(results.closedTickets)
       data.graphData = results.graphData
-      data.avgResponse = results.avgResponse
+      data.overdueStats = results.overdueStats
       data.tags = tags
 
       return res.json({ success: true, data: data })

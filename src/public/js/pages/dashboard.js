@@ -30,7 +30,7 @@ define('pages/dashboard', [
     'critical': 0,
     'urgent': 0,
     'normal': 0,
-  }
+  };
 
   dashboardPage.init = function (callback) {
     $(document).ready(function () {

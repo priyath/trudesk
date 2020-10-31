@@ -59,6 +59,7 @@
 
                             <h2 class="uk-margin-remove">
                                 <span id="text_complete">--</span>%
+                                <span id="text_complete_count" class="uk-text-muted uk-text-small">()</span>
                             </h2>
                         </div>
                     </div>
@@ -69,10 +70,15 @@
                             <div class="right uk-margin-top ukmargin-small-right">
                                 <span id="responseTime_graph" class="peity-line">5,3,9,6,5,9,7,3,5,2</span>
                             </div>
-                            <span class="uk-text-muted uk-text-small">Avg Response Time</span>
+                            <span class="uk-text-muted uk-text-small tickets-overdue">Overdue Tickets</span>
 
                             <h2 class="uk-margin-remove">
-                                <span id="responseTime_text">--</span> hours
+                                <span id="sla_count_critical" class="tickets-overdue">--</span>
+                                <span id="text_complete_count" class="uk-text-muted uk-text-small">(Critical)</span>
+                                <span id="sla_count_urgent" class="tickets-overdue">--</span>
+                                <span id="text_complete_count" class="uk-text-muted uk-text-small">(Urgent)</span>
+                                <span id="sla_count_normal" class="tickets-overdue">--</span>
+                                <span id="text_complete_count" class="uk-text-muted uk-text-small">(Normal)</span>
                             </h2>
                         </div>
                     </div>
@@ -108,7 +114,7 @@
                 </div>
             </div>
             <div class="uk-grid uk-margin-medium-bottom">
-                <div class="uk-width-1-1">
+                <div class="uk-width-1-2">
                     <div id="recentTickets" class="panel trupanel nopadding" style="min-height: 265px;">
                         <h6 style="padding: 15px; margin: 0; font-size: 14px;">Most Recent Tickets</h6>
                         <hr class="nomargin">
@@ -131,15 +137,15 @@
                         </div>
                     </div>
                 </div>
-<!--                <div class="uk-width-1-2">-->
-<!--                    <div id="grpTags" class="panel trupanel nopadding" style="min-height: 265px;" data-match-height="#recentTickets">-->
-<!--                        <h6 style="padding: 15px; margin: 0; font-size: 14px;">Tags</h6>-->
-<!--                        <hr class="nomargin">-->
-<!--                        <div class="tru-card-content">-->
-<!--                            <div id="topTags" style="width: 100%;"></div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <div class="uk-width-1-2">
+                    <div id="grpTags" class="panel trupanel nopadding" style="min-height: 265px;" data-match-height="#recentTickets">
+                        <h6 style="padding: 15px; margin: 0; font-size: 14px;">Tags</h6>
+                        <hr class="nomargin">
+                        <div class="tru-card-content">
+                            <div id="topTags" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
