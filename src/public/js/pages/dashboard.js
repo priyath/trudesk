@@ -345,7 +345,7 @@ define('pages/dashboard', [
           .find('.card-spinner')
           .css({ display: 'block', opacity: 1 })
         $.ajax({
-          url: '/api/v1/tickets/count/topgroups/' + timespan + '/5',
+          url: '/api/v1/tickets/count/topgroups/' + timespan + '/10',
           method: 'GET',
           success: function (data) {
             var arr = _.map(data.items, function (v) {
