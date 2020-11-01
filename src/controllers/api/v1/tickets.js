@@ -72,8 +72,8 @@ function buildOverdueStats (tickets, callback) {
    _.forEach(tickets, function (t) {
      const priority = t.priority;
 
-    if (!t.date && !t.updated) {
-      return false;
+    if ((!t.date && !t.updated) || t.status === 3) {
+      return;
     }
 
     var timeout = null;

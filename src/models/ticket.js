@@ -1243,7 +1243,7 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
           .model(COLLECTION)
           .find({
             group: { $in: grpId },
-            status: { $in: [0, 1] },
+            status: { $in: [0, 1, 2] },
             deleted: false,
             date: { $gte: tsDate.toDate(), $lte: today.toDate() },
           })

@@ -79,7 +79,7 @@ class Sidebar extends React.Component {
     const { activeItem, activeSubItem, sessionUser } = this.props
     return (
       <ul className='side-nav'>
-        {sessionUser && Helpers.canUser('agent:*', true) && (
+        {sessionUser && Helpers.canUser('admin:*', true) && (
           <SidebarItem
             text='Dashboard'
             icon='dashboard'
@@ -212,25 +212,27 @@ class Sidebar extends React.Component {
             active={activeItem === 'reports'}
           >
             <Submenu id='reports'>
-              <SubmenuItem
-                text='Generate'
-                icon='timeline'
-                href='/reports/generate'
-                active={activeSubItem === 'reports-generate'}
-              />
-              <NavSeparator />
+              {/*<SubmenuItem*/}
+              {/*  text='Generate'*/}
+              {/*  icon='timeline'*/}
+              {/*  href='/reports/generate'*/}
+              {/*  active={activeSubItem === 'reports-generate'}*/}
+              {/*/>*/}
+              {/*<NavSeparator />*/}
               <SubmenuItem
                 text='Group Breakdown'
                 icon='supervisor_account'
                 href='/reports/breakdown/group'
                 active={activeSubItem === 'reports-breakdown-group'}
               />
-              <SubmenuItem
-                text='User Breakdown'
-                icon='perm_identity'
-                href='/reports/breakdown/user'
-                active={activeSubItem === 'reports-breakdown-user'}
-              />
+              {sessionUser && Helpers.canUser('admin:*', true) && (
+                <SubmenuItem
+                  text='User Breakdown'
+                  icon='perm_identity'
+                  href='/reports/breakdown/user'
+                  active={activeSubItem === 'reports-breakdown-user'}
+                />
+              )}
             </Submenu>
           </SidebarItem>
         )}
