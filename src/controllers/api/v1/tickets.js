@@ -1965,6 +1965,8 @@ apiTickets.getDashboardStats = function (req, res) {
               "totalTicketCount": resultObject.totalTicketCount,
               "closedTicketCount": resultObject.closedTicketCount,
               "tagData": resultObject.tagData,
+              "graphData": resultObject.graphData,
+              "quickStats": resultObject.quickStats,
             })
           })
         }

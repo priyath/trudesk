@@ -204,6 +204,48 @@ define('pages/dashboard', [
                     $(this).hide()
                   })
 
+              // graph data
+              if (!_data.dashboardData.graphData) {
+                console.log('[trudesk:dashboard:getData] Error - Invalid Graph Data')
+                helpers.UI.showSnackbar('Error - Invalid Graph Data', true)
+              } else if (_data.dashboardData.graphData.length < 1) {
+                // No data in graph. Show No Data avaliable
+                var $breakdownGraph = $('#breakdownGraph')
+                $breakdownGraph.empty()
+                $breakdownGraph.append('<div class="no-data-available-text">No Data Available</div>')
+              } else {
+                $('#breakdownGraph').empty()
+                parms.data = MG.convert.date(_data.dashboardData.graphData, 'date')
+                MG.data_graphic(parms)
+              };
+
+              // QuickStats
+              const quickStats = _data.dashboardData.quickStats;
+              var mostRequester = $('#mostRequester')
+              if (quickStats.mostRequester) {
+                mostRequester.text(quickStats.mostRequester.name + ' (' + quickStats.mostRequester.value + ')')
+              }
+              var mostCommenter = $('#mostCommenter')
+              if (quickStats.mostComments) {
+                mostCommenter.text(quickStats.mostComments.name + ' (' + quickStats.mostComments.value + ')')
+              } else {
+                mostCommenter.text('--')
+              }
+
+              var mostAssignee = $('#mostAssignee')
+              if (quickStats.mostAssignee) {
+                mostAssignee.text(quickStats.mostAssignee.name + ' (' + quickStats.mostAssignee.value + ')')
+              } else {
+                mostAssignee.text('--')
+              }
+
+              var mostActiveTicket = $('#mostActiveTicket')
+              if (quickStats.mostActiveTicket) {
+                mostActiveTicket
+                    .attr('href', '/tickets/' + quickStats.mostActiveTicket.uid)
+                    .text('T#' + quickStats.mostActiveTicket.uid)
+              }
+
               // initialize to 0
               slaCounts.critical = 0;
               slaCounts.urgent = 0;
@@ -283,62 +325,62 @@ define('pages/dashboard', [
           })
         }
 
-        $.ajax({
-          url: '/api/v1/tickets/stats/' + timespan,
-          method: 'GET',
-          success: function (_data) {
-            var lastUpdated = $('#lastUpdated').find('span')
-
-            var formatString = helpers.getLongDateFormat() + ' ' + helpers.getTimeFormat()
-            var formated = moment.utc(_data.lastUpdated, 'MM/DD/YYYY hh:mm:ssa').format(formatString)
-
-            lastUpdated.text(formated)
-
-            if (!_data.data) {
-              console.log('[trudesk:dashboard:getData] Error - Invalid Graph Data')
-              helpers.UI.showSnackbar('Error - Invalid Graph Data', true)
-            } else if (_data.data.length < 1) {
-              // No data in graph. Show No Data avaliable
-              var $breakdownGraph = $('#breakdownGraph')
-              $breakdownGraph.empty()
-              $breakdownGraph.append('<div class="no-data-available-text">No Data Available</div>')
-            } else {
-              $('#breakdownGraph').empty()
-              parms.data = MG.convert.date(_data.data, 'date')
-              MG.data_graphic(parms)
-            }
-
-            // QuickStats
-            var mostRequester = $('#mostRequester')
-            if (_data.mostRequester) {
-              mostRequester.text(_data.mostRequester.name + ' (' + _data.mostRequester.value + ')')
-            }
-            var mostCommenter = $('#mostCommenter')
-            if (_data.mostCommenter) {
-              mostCommenter.text(_data.mostCommenter.name + ' (' + _data.mostCommenter.value + ')')
-            } else {
-              mostCommenter.text('--')
-            }
-
-            var mostAssignee = $('#mostAssignee')
-            if (_data.mostAssignee) {
-              mostAssignee.text(_data.mostAssignee.name + ' (' + _data.mostAssignee.value + ')')
-            } else {
-              mostAssignee.text('--')
-            }
-
-            var mostActiveTicket = $('#mostActiveTicket')
-            if (_data.mostActiveTicket) {
-              mostActiveTicket
-                .attr('href', '/tickets/' + _data.mostActiveTicket.uid)
-                .text('T#' + _data.mostActiveTicket.uid)
-            }
-          },
-          error: function (err) {
-            console.log('[trudesk:dashboard:getData] Error - ' + err.responseText)
-            helpers.UI.showSnackbar(err.responseText, true)
-          }
-        })
+        // $.ajax({
+        //   url: '/api/v1/tickets/stats/' + timespan,
+        //   method: 'GET',
+        //   success: function (_data) {
+        //     var lastUpdated = $('#lastUpdated').find('span')
+        //
+        //     var formatString = helpers.getLongDateFormat() + ' ' + helpers.getTimeFormat()
+        //     var formated = moment.utc(_data.lastUpdated, 'MM/DD/YYYY hh:mm:ssa').format(formatString)
+        //
+        //     lastUpdated.text(formated)
+        //
+        //     if (!_data.data) {
+        //       console.log('[trudesk:dashboard:getData] Error - Invalid Graph Data')
+        //       helpers.UI.showSnackbar('Error - Invalid Graph Data', true)
+        //     } else if (_data.data.length < 1) {
+        //       // No data in graph. Show No Data avaliable
+        //       var $breakdownGraph = $('#breakdownGraph')
+        //       $breakdownGraph.empty()
+        //       $breakdownGraph.append('<div class="no-data-available-text">No Data Available</div>')
+        //     } else {
+        //       $('#breakdownGraph').empty()
+        //       parms.data = MG.convert.date(_data.data, 'date')
+        //       MG.data_graphic(parms)
+        //     }
+        //
+        //     // QuickStats
+        //     var mostRequester = $('#mostRequester')
+        //     if (_data.mostRequester) {
+        //       mostRequester.text(_data.mostRequester.name + ' (' + _data.mostRequester.value + ')')
+        //     }
+        //     var mostCommenter = $('#mostCommenter')
+        //     if (_data.mostCommenter) {
+        //       mostCommenter.text(_data.mostCommenter.name + ' (' + _data.mostCommenter.value + ')')
+        //     } else {
+        //       mostCommenter.text('--')
+        //     }
+        //
+        //     var mostAssignee = $('#mostAssignee')
+        //     if (_data.mostAssignee) {
+        //       mostAssignee.text(_data.mostAssignee.name + ' (' + _data.mostAssignee.value + ')')
+        //     } else {
+        //       mostAssignee.text('--')
+        //     }
+        //
+        //     var mostActiveTicket = $('#mostActiveTicket')
+        //     if (_data.mostActiveTicket) {
+        //       mostActiveTicket
+        //         .attr('href', '/tickets/' + _data.mostActiveTicket.uid)
+        //         .text('T#' + _data.mostActiveTicket.uid)
+        //     }
+        //   },
+        //   error: function (err) {
+        //     console.log('[trudesk:dashboard:getData] Error - ' + err.responseText)
+        //     helpers.UI.showSnackbar(err.responseText, true)
+        //   }
+        // })
 
         $('#pieChart')
           .parent()

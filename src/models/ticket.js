@@ -1243,15 +1243,38 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
           .model(COLLECTION)
           .find({
             group: { $in: grpId },
-            status: { $in: [0, 1, 2] },
+            status: { $in: [0, 1, 2, 3] },
             deleted: false,
             date: { $gte: tsDate.toDate(), $lte: today.toDate() },
           })
-          .select('_id date updated')
+          .select('_id uid date updated status assignee history owner comments.owner')
+          .populate(
+            'assignee fullname'
+          )
+          .populate(
+            'owner fullname'
+          )
+          .populate(
+            'comments.owner fullname'
+          )
           .lean()
           .exec(next)
       },
       function (tickets, next) {
+        const graphData = buildGraphData(tickets, timespan);
+
+        const mostRequester = buildMostRequester(tickets);
+        const mostComments = buildMostComments(tickets);
+        const mostAssignee = buildMostAssignee(tickets);
+        const mostActiveTicket = buildMostActiveTicket(tickets);
+
+        const quickStats = {
+          mostActiveTicket,
+          mostAssignee,
+          mostComments,
+          mostRequester,
+        };
+
         var t = _.map(tickets, function (i) {
           return _.transform(
             i,
@@ -1260,17 +1283,18 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
               if (key === 'priority') result.overdueIn = value.overdueIn
               if (key === 'date') result.date = value
               if (key === 'updated') result.updated = value
+              if (key === 'status') result.status = value
             },
             {}
           )
-        })
+        });
 
-        return next(null, t)
+        return next(null, {'tickets': t, graphData, quickStats});
       },
-      function (tickets, next) {
+      function ({ tickets, graphData, quickStats}, next) {
         var now = new Date()
         var ids = _.filter(tickets, function (t) {
-          if (!t.date && !t.updated) {
+          if ((!t.date && !t.updated) || t.status === 3) {
             return false
           }
 
@@ -1290,9 +1314,9 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
 
         ids = _.map(ids, '_id')
 
-        return next(null, ids)
+        return next(null, {ids, graphData, quickStats})
       },
-      function (ids, next) {
+      function ({ids, graphData, quickStats}, next) {
         return self
           .model(COLLECTION)
           .find({ _id: { $in: ids } })
@@ -1300,7 +1324,9 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
           .select('_id uid status subject updated date group')
           .populate('group', 'name coordinates')
           .lean()
-          .exec(next)
+          .exec(function (err, tickets) {
+            return next(null, {tickets, graphData, quickStats})
+          });
       },
       // function (tickets, next) {
       //   return self
@@ -1316,7 +1342,7 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
       //         );
       //       });
       // }
-      function (tickets, next) {
+      function ({tickets, graphData, quickStats}, next) {
         return self
             .model(COLLECTION)
             .find({
@@ -1326,11 +1352,11 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
             .exec(function (err, totalTicketList) {
                 const tagStats = require('../cache/tagStats');
                 tagStats(totalTicketList, timespan, function (err, tagData) {
-                  return next(null, {tickets, totalTicketCount: totalTicketList.length, tagData})
+                  return next(null, {tickets, totalTicketCount: totalTicketList.length, tagData, graphData, quickStats})
                 })
               });
       },
-      function ({tickets, totalTicketCount, tagData}, next) {
+      function ({tickets, totalTicketCount, tagData, graphData, quickStats}, next) {
         return self
             .model(COLLECTION)
             .count({
@@ -1339,7 +1365,7 @@ ticketSchema.statics.getOverdue = function (grpId, timespan, callback) {
               date: { $gte: tsDate.toDate(), $lte: today.toDate() },
             })
             .exec(function (err, closedTicketCount) {
-              return next(null, {tickets, totalTicketCount, closedTicketCount, tagData})
+              return next(null, {tickets, totalTicketCount, closedTicketCount, tagData, graphData, quickStats})
             });
       }
     ],
@@ -1865,6 +1891,137 @@ function isTicketOverdue (t) {
   } catch (e) {
     return false;
   }
+}
+
+function buildGraphData (arr, days) {
+  var graphData = []
+  if (arr.length < 1) {
+    return graphData;
+  }
+  var today = moment()
+      .hour(23)
+      .minute(59)
+      .second(59)
+  var timespanArray = []
+  for (var i = days; i--; ) {
+    timespanArray.push(i)
+  }
+
+  arr = _.map(arr, function (i) {
+    return moment(i.date).format('YYYY-MM-DD')
+  })
+
+  var counted = _.countBy(arr)
+
+  for (var k = 0; k < timespanArray.length; k++) {
+    var obj = {}
+    var day = timespanArray[k]
+    var d = today.clone().subtract(day, 'd')
+    obj.date = d.format('YYYY-MM-DD')
+
+    obj.value = counted[obj.date] === undefined ? 0 : counted[obj.date]
+
+    graphData.push(obj)
+  }
+
+  counted = null
+
+  return graphData;
+}
+
+function buildMostRequester (ticketArray) {
+  var requesters = _.map(ticketArray, function (m) {
+    if (m.owner) {
+      return m.owner.fullname
+    }
+
+    return null
+  })
+
+  requesters = _.compact(requesters)
+
+  var r = _.countBy(requesters, function (k) {
+    return k
+  })
+  r = _(r).value()
+
+  r = _.map(r, function (v, k) {
+    return { name: k, value: v }
+  })
+
+  r = _.sortBy(r, function (o) {
+    return -o.value
+  })
+
+  return _.first(r);
+}
+
+function flatten (arr) {
+  return arr.reduce(function (flat, toFlatten) {
+    return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten)
+  }, [])
+}
+
+function buildMostComments (ticketArray) {
+  var commenters = _.map(ticketArray, function (m) {
+    return _.map(m.comments, function (i) {
+      return i.owner.fullname
+    })
+  })
+
+  commenters = flatten(commenters)
+
+  var c = _.countBy(commenters, function (k) {
+    return k
+  })
+
+  c = _(c).value()
+
+  c = _.map(c, function (v, k) {
+    return { name: k, value: v }
+  })
+
+  c = _.sortBy(c, function (o) {
+    return -o.value
+  })
+
+  return _.first(c);
+}
+
+function buildMostAssignee (ticketArray) {
+  ticketArray = _.reject(ticketArray, function (v) {
+    return _.isUndefined(v.assignee) || _.isNull(v.assignee)
+  })
+
+  var assignees = _.map(ticketArray, function (m) {
+    return m.assignee.fullname
+  })
+
+  var a = _.countBy(assignees, function (k) {
+    return k
+  })
+
+  a = _(a).value()
+
+  a = _.map(a, function (v, k) {
+    return { name: k, value: v }
+  })
+
+  a = _.sortBy(a, function (o) {
+    return -o.value
+  })
+
+  return _.first(a);
+}
+
+function buildMostActiveTicket (ticketArray) {
+  var tickets = _.map(ticketArray, function (m) {
+    return { uid: m.uid, cSize: _.size(m.history) }
+  })
+
+  tickets = _.sortBy(tickets, 'cSize').reverse()
+
+  return _.first(tickets);
 }
 
 module.exports = mongoose.model(COLLECTION, ticketSchema)
