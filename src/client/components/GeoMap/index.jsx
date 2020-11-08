@@ -13,7 +13,7 @@ import CustMarker from './CustMarker';
 const Map = ({ markers, onMarkerClick }) => {
     return (
         <GoogleMap
-            defaultZoom={8}
+            defaultZoom={7.5}
             defaultCenter={{ lat: 7.738738, lng: 80.690157 }}
             defaultOptions={{
                 styles: silverMapStyle,
