@@ -281,22 +281,22 @@ define('pages/dashboard', [
                     helpers.statusToClassName(ticket.status).toLowerCase() + ' uk-width-1-1">' +
                     helpers.statusToName(ticket.status)
                     + '</span></td>'
-                html += '<td class="uk-width-6-10">' + ticket.subject + '</td>'
+                html += '<td class="uk-width-5-10">' + ticket.subject + '</td>'
                 if (ticket.updated) {
                   html +=
-                      '<td class="uk-width-2-10 uk-text-right uk-text-muted uk-text-small">' +
+                      '<td class="uk-width-3-10 uk-text-right uk-text-muted uk-text-small">' +
                       moment
                           .utc(ticket.updated)
                           .tz(helpers.getTimezone())
-                          .format(dashboardPage.shortDateFormat) +
+                          .format(helpers.getLongDateFormat() + ' ' + helpers.getTimeFormat()) +
                       '</td>'
                 } else {
                   html +=
-                      '<td class="uk-width-2-10 uk-text-right uk-text-muted uk-text-small">' +
+                      '<td class="uk-width-3-10 uk-text-right uk-text-muted uk-text-small">' +
                       moment
                           .utc(ticket.date)
                           .tz(helpers.getTimezone())
-                          .format(dashboardPage.shortDateFormat) +
+                          .format(helpers.getLongDateFormat() + ' ' + helpers.getTimeFormat()) +
                       '</td>'
                 }
                 html += '</tr>'

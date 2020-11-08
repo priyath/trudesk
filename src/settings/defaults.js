@@ -251,7 +251,7 @@ function timezoneDefault (callback) {
     if (!setting) {
       var defaultTimezone = new SettingsSchema({
         name: 'gen:timezone',
-        value: 'America/New_York'
+        value: 'Asia/Colombo'
       })
 
       defaultTimezone.save(function (err, setting) {

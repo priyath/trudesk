@@ -330,7 +330,7 @@ class TicketsContainer extends React.Component {
               <TableHeader key={1} width={60} text={'Status'} />,
               <TableHeader key={2} width={65} text={'#'} />,
               <TableHeader key={3} width={'23%'} text={'Subject'} />,
-              <TableHeader key={4} width={110} text={'Created'} />,
+              <TableHeader key={4} text={'Created'} />,
               <TableHeader key={5} width={125} text={'Requester'} />,
               <TableHeader key={6} width={175} text={'Customer'} />,
               <TableHeader key={7} text={'Assignee'} />,
@@ -383,11 +383,17 @@ class TicketsContainer extends React.Component {
                   ? helpers.formatDate(ticket.get('updated'), helpers.getShortDateFormat()) +
                     ', ' +
                     helpers.formatDate(ticket.get('updated'), helpers.getTimeFormat())
-                  : '--'
+                  : '--';
+
+                const created = ticket.get('date')
+                    ? helpers.formatDate(ticket.get('date'), helpers.getShortDateFormat()) +
+                    ', ' +
+                    helpers.formatDate(ticket.get('date'), helpers.getTimeFormat())
+                    : '--';
 
                 const dueDate = ticket.get('dueDate')
                   ? helpers.formatDate(ticket.get('dueDate'), helpers.getShortDateFormat())
-                  : '--'
+                  : '--';
 
                 const isOverdue = () => {
                   if (!this.props.common.showOverdue || [2, 3].indexOf(ticket.get('status')) !== -1) return false
@@ -438,7 +444,7 @@ class TicketsContainer extends React.Component {
                     <TableCell className={'vam nbb'}>{ticket.get('uid')}</TableCell>
                     <TableCell className={'vam nbb'}>{ticket.get('subject')}</TableCell>
                     <TableCell className={'vam nbb'}>
-                      {helpers.formatDate(ticket.get('date'), helpers.getShortDateFormat())}
+                      {created}
                     </TableCell>
                     <TableCell className={'vam nbb'}>{ticket.getIn(['owner', 'fullname'])}</TableCell>
                     <TableCell className={'vam nbb'}>{ticket.getIn(['group', 'name'])}</TableCell>
